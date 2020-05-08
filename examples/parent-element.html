@@ -2,15 +2,23 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Verf test</title>
+        <title>Verf parent element</title>
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        <div id="game-container"></div>
         <script type="module">
             import {VerfGame} from '../index.js';
-            const game = new VerfGame();
+            const config = {
+                parent: '#game-container',
+                width: 640,
+                height: 360,
+                zoom: 1,
+                resizable: false
+            };
+            const game = new VerfGame(config);
         </script>
     </body>
 </html>

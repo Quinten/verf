@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf fixed size</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame} from '../index.js';
+            const config = {
+                width: 320,
+                height: 240,
+                zoom: 2,
+                resizable: false
+            };
+            const game = new VerfGame(config);
+        </script>
+    </body>
+</html>
