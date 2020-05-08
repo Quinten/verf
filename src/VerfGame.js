@@ -1,3 +1,5 @@
+import Engine from './core/Engine.js';
+
 class VerfGame {
 
     constructor ({
@@ -6,7 +8,8 @@ class VerfGame {
         height = 180,
         resizable = true,
         zoom = 'auto',
-        pixelArt = true
+        pixelArt = true,
+        scenes = []
     } = {})
     {
         this.parent = document.querySelector(parent);
@@ -40,6 +43,8 @@ class VerfGame {
             }
             this.setSize(width, height, this.zoom);
         }
+
+        this.engine = new Engine(scenes, this.canvas);
     }
 
     onWindowResize() {
