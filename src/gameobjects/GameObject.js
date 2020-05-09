@@ -24,6 +24,7 @@ class GameObject {
     draw (context)
     {
         //if you don't override this method you get a square
+        context.fillStyle = "#00FF00";
         context.fillRect(-16, -16, 32, 32);
     }
 

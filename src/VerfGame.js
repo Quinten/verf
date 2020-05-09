@@ -9,7 +9,8 @@ class VerfGame {
         resizable = true,
         zoom = 'auto',
         pixelArt = true,
-        scenes = []
+        scenes = [],
+        background = 'transparent'
     } = {})
     {
         this.parent = document.querySelector(parent);
@@ -20,7 +21,7 @@ class VerfGame {
         this.canvas.style.display = 'block';
         this.parent.appendChild(this.canvas);
 
-        this.engine = new Engine(scenes, this.canvas);
+        this.engine = new Engine(scenes, this.canvas, background);
 
         this.zoom = zoom;
         if (resizable) {
