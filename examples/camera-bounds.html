@@ -18,6 +18,9 @@
                     super(config);
                     this.speedX = 4;
                     this.speedY = 4;
+                    this.fillStyle = '#ff0000';
+                    this.width = 40;
+                    this.height = 40;
                 }
 
                 update (time, delta)
@@ -41,25 +44,16 @@
                         this.speedY = -this.speedY;
                     }
                 }
-
-                draw(context) {
-                    context.fillStyle = '#ff0000';
-                    context.fillRect(-20, -20, 40, 40);
-                }
-            }
-
-            class BlueSquare extends GameObject {
-                draw(context) {
-                    context.fillStyle = '#0000ff';
-                    context.fillRect(-620, -460, 1240, 920);
-                }
             }
 
             class TestScene extends Scene {
                 init ()
                 {
                     // normal square in the world (for reference)
-                    this.squareTwo = new BlueSquare({x: this.viewport.width, y: this.viewport.height});
+                    this.squareTwo = new GameObject({x: this.viewport.width, y: this.viewport.height});
+                    this.squareTwo.fillStyle = '#0000FF';
+                    this.squareTwo.width = 1240;
+                    this.squareTwo.height = 920;
                     this.add(this.squareTwo);
 
                     for (let s = 0; s < 20; s++) {

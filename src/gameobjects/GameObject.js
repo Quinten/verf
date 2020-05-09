@@ -10,6 +10,9 @@ class GameObject {
         this.rotation = 0;
         this.scrollFactorX = 1;
         this.scrollFactorY = 1;
+        this.width = 32;
+        this.height = 32;
+        this.fillStyle = '#00FF00';
     }
 
     render (context, offset)
@@ -23,9 +26,9 @@ class GameObject {
 
     draw (context)
     {
-        //if you don't override this method you get a square
-        context.fillStyle = "#00FF00";
-        context.fillRect(-16, -16, 32, 32);
+        //if you don't override this method you get a green square
+        context.fillStyle = this.fillStyle;
+        context.fillRect(-this.width/2, -this.height/2, this.width, this.height);
     }
 
     destroy()

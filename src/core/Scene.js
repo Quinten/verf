@@ -42,6 +42,25 @@ class Scene {
     {
         let offset = this.camera.getOffset();
         this.children.forEach((child) => {
+            // cull child
+            // check if child is in viewport first
+            // left
+            if (child.x + child.width < offset.x) {
+                return;
+            }
+            // right
+            if (child.x > offset.x + this.viewport.width) {
+                return;
+            }
+            // top
+            if (child.y + child.height < offset.y) {
+                return;
+            }
+            // bottom
+            if (child.y > offset.y + this.viewport.height) {
+                return;
+            }
+            // all okay render child
             child.render(context, offset);
         });
     }
