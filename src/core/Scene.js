@@ -40,7 +40,7 @@ class Scene {
 
     render (context)
     {
-        let offset = this.camera.preUpdate(context);
+        let offset = this.camera.getOffset();
         this.children.forEach((child) => {
             child.render(context, offset);
         });
