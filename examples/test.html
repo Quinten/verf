@@ -24,11 +24,19 @@
                     this.square = new RedSquare({x: this.viewport.width / 2, y: this.viewport.height / 2});
                     this.add(this.square);
                     this.squareTwo = new RedSquare({x: this.viewport.width / 2, y: this.viewport.height * 2 / 3});
+                    //this.squareTwo.scrollFactorX = 0.5;
+                    //this.squareTwo.scrollFactorY = 0.5;
                     this.add(this.squareTwo);
+                    this.squareThree = new RedSquare();
+                    this.squareThree.scrollFactorX = 0;
+                    this.squareThree.scrollFactorY = 0;
+                    this.add(this.squareThree);
                 }
 
                 update (time, delta) {
                     this.square.x = (1 + Math.sin(time / 600)) * this.viewport.width / 2;
+                    this.camera.x += (this.square.x - this.camera.x) / 6;
+                    this.camera.y += (this.square.y - this.camera.y) / 6;
                 }
 
                 resize(w, h) {

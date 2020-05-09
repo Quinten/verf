@@ -74,6 +74,9 @@ class VerfGame {
             scene.viewport.width = width;
             scene.viewport.height = height;
             scene.viewport.zoom = zoom;
+            scene.camera.viewport.width = width;
+            scene.camera.viewport.height = height;
+            scene.camera.viewport.zoom = zoom;
             if (scene.active) {
                 scene.resize(width, height);
             }

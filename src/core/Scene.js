@@ -1,13 +1,18 @@
+import Camera from './Camera.js';
+
 class Scene {
 
     constructor ()
     {
         this.active = false;
         this.viewport = {width: 320, height: 180, zoom: 1};
+        this.camera = new Camera();
     }
 
     setup()
     {
+        this.camera.x = this.viewport.width / 2;
+        this.camera.y = this.viewport.height / 2;
         this.children = [];
         this.init();
         this.active = true;
@@ -35,8 +40,9 @@ class Scene {
 
     render (context)
     {
+        let offset = this.camera.preUpdate(context);
         this.children.forEach((child) => {
-            child.render(context);
+            child.render(context, offset);
         });
     }
 
