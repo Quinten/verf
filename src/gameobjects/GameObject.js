@@ -1,19 +1,28 @@
 class GameObject {
 
-    constructor ()
+    constructor ({
+        x = 0,
+        y = 0
+    } = {})
     {
-        this.x = 100;
-        this.y = 100;
+        this.x = x;
+        this.y = y;
         this.rotation = 0;
     }
 
     render (context)
     {
         context.save();
-        context.translate(this.x, this.y);
+        context.translate(Math.floor(this.x), Math.floor(this.y));
         context.rotate(this.rotation);
-        context.fillRect(-16, -16, 32, 32);
+        this.draw(context);
         context.restore();
+    }
+
+    draw (context)
+    {
+        //if you don't override this method you get a square
+        context.fillRect(-16, -16, 32, 32);
     }
 
     destroy()

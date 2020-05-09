@@ -19,8 +19,10 @@ class VerfGame {
         }
         this.canvas.style.display = 'block';
         this.parent.appendChild(this.canvas);
-        this.zoom = zoom;
 
+        this.engine = new Engine(scenes, this.canvas);
+
+        this.zoom = zoom;
         if (resizable) {
             if (zoom == 'auto') {
                 if (width) {
@@ -31,7 +33,10 @@ class VerfGame {
                 }
             }
             this.resizeTOID = 0;
-            window.addEventListener('resize', this.onWindowResize.bind(this));
+            window.addEventListener('resize', () => {
+                clearTimeout(this.resizeTOID);
+                this.resizeTOID = setTimeout(this.onWindowResize.bind(this), 500);
+            });
             this.onWindowResize();
 
             document.body.style.margin = '0';
@@ -44,22 +49,19 @@ class VerfGame {
             this.setSize(width, height, this.zoom);
         }
 
-        this.engine = new Engine(scenes, this.canvas);
+        this.engine.start();
     }
 
     onWindowResize() {
-        clearTimeout(this.resizeTOID);
-        this.resizeTOID = setTimeout(() => {
-            let zoom = this.zoom;
-            if (zoom == 'auto') {
-                let wZoom = Math.max(1, Math.floor(window.innerWidth / ((this.targetWidth) ? this.targetWidth : window.innerWidth)));
-                let hZoom = Math.max(1, Math.floor(window.innerHeight / ((this.targetHeight) ? this.targetHeight : window.innerHeight)));
-                zoom = Math.min(wZoom, hZoom);
-            }
-            let w = Math.ceil(window.innerWidth / zoom);
-            let h = Math.ceil(window.innerHeight / zoom);
-            this.setSize(w, h, zoom);
-        }, 500);
+        let zoom = this.zoom;
+        if (zoom == 'auto') {
+            let wZoom = Math.max(1, Math.floor(window.innerWidth / ((this.targetWidth) ? this.targetWidth : window.innerWidth)));
+            let hZoom = Math.max(1, Math.floor(window.innerHeight / ((this.targetHeight) ? this.targetHeight : window.innerHeight)));
+            zoom = Math.min(wZoom, hZoom);
+        }
+        let w = Math.ceil(window.innerWidth / zoom);
+        let h = Math.ceil(window.innerHeight / zoom);
+        this.setSize(w, h, zoom);
     }
 
     setSize(width, height, zoom) {
@@ -68,7 +70,16 @@ class VerfGame {
         this.canvas.style.width = (width * zoom) + 'px';
         this.canvas.style.height = (height * zoom) + 'px';
 
-        // TODO: apply width and height to cameras and scene
+        this.engine.scenes.forEach((scene) => {
+            scene.viewport.width = width;
+            scene.viewport.height = height;
+            scene.viewport.zoom = zoom;
+            if (scene.active) {
+                scene.resize(width, height);
+            }
+        });
+
+        // TODO: apply width and height to cameras
     }
 }
 export default VerfGame;

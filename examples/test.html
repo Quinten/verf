@@ -11,15 +11,27 @@
         <script type="module">
             import {VerfGame, Scene, GameObject} from '../index.js';
 
+            class RedSquare extends GameObject {
+                draw(context) {
+                    context.fillStyle = '#ff0000';
+                    context.fillRect(-16, -16, 32, 32);
+                }
+            }
+
             class TestScene extends Scene {
                 init ()
                 {
-                    this.testObj = new GameObject();
-                    this.children.push(this.testObj);
+                    this.square = new RedSquare({x: this.viewport.width / 2, y: this.viewport.height / 2});
+                    this.add(this.square);
                 }
 
                 update (time, delta) {
-                    this.testObj.x = Math.sin(time / 600) * 320;
+                    this.square.x = (1 + Math.sin(time / 600)) * this.viewport.width / 2;
+                }
+
+                resize(w, h) {
+                    //this.square.x = w / 2;
+                    this.square.y = h / 2;
                 }
             }
 

@@ -8,11 +8,14 @@ class Engine {
         scenes.forEach((scene) => {
             this.scenes.push(new scene());
         });
+        this.time = 0;
+    }
+
+    start() {
         if (this.scenes[0]) {
             this.scenes[0].setup();
         }
         window.requestAnimationFrame(this.onFrame.bind(this));
-        this.time = 0;
     }
 
     onFrame (time)
