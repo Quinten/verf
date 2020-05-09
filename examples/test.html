@@ -23,6 +23,8 @@
                 {
                     this.square = new RedSquare({x: this.viewport.width / 2, y: this.viewport.height / 2});
                     this.add(this.square);
+                    this.squareTwo = new RedSquare({x: this.viewport.width / 2, y: this.viewport.height * 2 / 3});
+                    this.add(this.squareTwo);
                 }
 
                 update (time, delta) {
@@ -32,6 +34,8 @@
                 resize(w, h) {
                     //this.square.x = w / 2;
                     this.square.y = h / 2;
+                    this.squareTwo.x = w / 2;
+                    this.squareTwo.y = h * 2 / 3;
                 }
             }
 
