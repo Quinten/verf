@@ -1,3 +1,5 @@
+import Events from './Events.js';
+
 class Camera {
 
     constructor ({
@@ -14,6 +16,13 @@ class Camera {
         this.bounds = undefined;
         this.shakeTimer = 0;
         this.shakeIntensity = .02;
+        this.events = new Events();
+        this.fadeTimer = 0;
+        this.fadeDuration = 0;
+        this.fadeColor = '#000000';
+        this.flashTimer = 0;
+        this.flashDuration = 0;
+        this.flashColor = '#000000';
     }
 
     getOffset(time, delta)
@@ -40,6 +49,32 @@ class Camera {
         return {x, y};
     }
 
+    postRender (context, time, delta)
+    {
+        if (this.fadeTimer > 0) {
+            this.fadeTimer -= delta;
+            context.save();
+            context.globalAlpha = Math.min(1, 1 - (this.fadeTimer / this.fadeDuration));
+            context.fillStyle = this.fadeColor;
+            context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+            context.restore();
+            if (this.fadeTimer <= 0) {
+                this.events.emit('fadecomplete');
+            }
+        }
+        if (this.flashTimer > 0) {
+            context.save();
+            context.globalAlpha = Math.max(0, (this.flashTimer / this.flashDuration));
+            context.fillStyle = this.flashColor;
+            context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+            context.restore();
+            this.flashTimer -= delta;
+            if (this.flashTimer <= 0) {
+                this.events.emit('flashcomplete');
+            }
+        }
+    }
+
     setBounds(x, y, width, height)
     {
         this.bounds = {x, y, width, height};
@@ -52,6 +87,26 @@ class Camera {
     {
         this.shakeTimer = duration;
         this.shakeIntensity = intensity
+    }
+
+    fade({
+        duration = 750,
+        color = '#000000'
+    } = {})
+    {
+        this.fadeTimer = duration;
+        this.fadeDuration = duration;
+        this.fadeColor = color;
+    }
+
+    flash({
+        duration = 750,
+        color = '#000000'
+    } = {})
+    {
+        this.flashTimer = duration;
+        this.flashDuration = duration;
+        this.flashColor = color;
     }
 }
 export default Camera;

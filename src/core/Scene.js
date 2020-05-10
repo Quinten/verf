@@ -63,6 +63,7 @@ class Scene {
             // all okay render child
             child.render(context, offset);
         });
+        this.camera.postRender(context, time, delta);
     }
 
     resize(w, h)
