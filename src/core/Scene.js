@@ -45,19 +45,19 @@ class Scene {
             // cull child
             // check if child is in viewport first
             // left
-            if (child.x + child.width < offset.x) {
+            if (child.x + child.width < offset.x * child.scrollFactorX) {
                 return;
             }
             // right
-            if (child.x > offset.x + this.viewport.width) {
+            if (child.x > offset.x * child.scrollFactorX + this.viewport.width) {
                 return;
             }
             // top
-            if (child.y + child.height < offset.y) {
+            if (child.y + child.height < offset.y * child.scrollFactorY) {
                 return;
             }
             // bottom
-            if (child.y > offset.y + this.viewport.height) {
+            if (child.y > offset.y * child.scrollFactorY + this.viewport.height) {
                 return;
             }
             // all okay render child
