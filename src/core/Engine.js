@@ -41,7 +41,7 @@ class Engine {
         });
         this.scenes.forEach((scene) => {
             if (scene.active) {
-                scene.render(this.context);
+                scene.render(this.context, time, delta);
             }
         });
         window.requestAnimationFrame(this.onFrame.bind(this));

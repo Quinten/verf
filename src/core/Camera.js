@@ -12,9 +12,11 @@ class Camera {
         this.lerpX = 1;
         this.lerpY = 1;
         this.bounds = undefined;
+        this.shakeTimer = 0;
+        this.shakeIntensity = .02;
     }
 
-    getOffset()
+    getOffset(time, delta)
     {
         if (this.followTarget) {
             this.x += (this.followTarget.x - this.x) *  this.lerpX;
@@ -30,12 +32,26 @@ class Camera {
         }
         let x = this.x - hvpW;
         let y = this.y - hvpH;
+        if (this.shakeTimer > 0) {
+            this.shakeTimer -= delta;
+            x += this.viewport.width * (1 - Math.random() * 2) * this.shakeIntensity;
+            y += this.viewport.height * (1 - Math.random() * 2) * this.shakeIntensity;
+        }
         return {x, y};
     }
 
     setBounds(x, y, width, height)
     {
         this.bounds = {x, y, width, height};
+    }
+
+    shake({
+        duration = 300,
+        intensity = .02
+    } = {})
+    {
+        this.shakeTimer = duration;
+        this.shakeIntensity = intensity
     }
 }
 export default Camera;

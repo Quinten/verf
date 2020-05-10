@@ -38,9 +38,9 @@ class Scene {
     {
     }
 
-    render (context)
+    render (context, time, delta)
     {
-        let offset = this.camera.getOffset();
+        let offset = this.camera.getOffset(time, delta);
         this.children.forEach((child) => {
             // cull child
             // check if child is in viewport first
