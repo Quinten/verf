@@ -13,6 +13,7 @@ class GameObject {
         this.width = 32;
         this.height = 32;
         this.fillStyle = '#00FF00';
+        this.scene = undefined;
     }
 
     render (context, offset)

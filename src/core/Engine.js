@@ -6,7 +6,9 @@ class Engine {
         this.context = canvas.getContext('2d');
         this.scenes = [];
         scenes.forEach((scene) => {
-            this.scenes.push(new scene());
+            let newScene = new scene();
+            newScene.engine = this;
+            this.scenes.push(newScene);
         });
         this.time = 0;
         this.background = background;
@@ -45,6 +47,19 @@ class Engine {
             }
         });
         window.requestAnimationFrame(this.onFrame.bind(this));
+    }
+
+    switchScene(name) {
+        this.scenes.forEach((scene) => {
+            if (scene.constructor.name == name) {
+                if (scene.active) {
+                    return;
+                }
+                scene.setup();
+            } else if (scene.active) {
+                scene.shutdown();
+            }
+        });
     }
 }
 export default Engine;

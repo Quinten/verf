@@ -7,6 +7,7 @@ class Scene {
         this.active = false;
         this.viewport = {width: 320, height: 180, zoom: 1};
         this.camera = new Camera();
+        this.engine = undefined;
     }
 
     setup()
@@ -20,21 +21,28 @@ class Scene {
 
     add(child)
     {
+        child.scene = this;
         this.children.push(child);
     }
 
     remove(child)
     {
+        child.scene = undefined;
         this.children.splice(this.children.indexOf(child), 1);
     }
 
-    // called by sub class
+    // overwrite in sub class
     init ()
     {
     }
 
-    // called by sub class
+    // overwrite in sub class
     update (time, delta)
+    {
+    }
+
+    // overwrite in sub class
+    resize(w, h)
     {
     }
 
@@ -66,13 +74,14 @@ class Scene {
         this.camera.postRender(context, time, delta);
     }
 
-    resize(w, h)
+    shutdown()
     {
-    }
-
-    destroy()
-    {
+        this.children.forEach((child) => {
+            child.scene = undefined;
+            child.destroy();
+        });
         this.children = [];
+        this.camera.events.off();
         this.active = false;
     }
 }

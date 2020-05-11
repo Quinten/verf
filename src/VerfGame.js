@@ -82,8 +82,6 @@ class VerfGame {
                 scene.resize(width, height);
             }
         });
-
-        // TODO: apply width and height to cameras
     }
 }
 export default VerfGame;
