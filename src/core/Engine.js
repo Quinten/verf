@@ -6,7 +6,11 @@ class Engine {
         this.context = canvas.getContext('2d');
         this.scenes = [];
         scenes.forEach((scene) => {
-            let newScene = new scene();
+            let newScene = new scene.class();
+            newScene.name = scene.name;
+            if (scene.options) {
+                newScene.options = options;
+            }
             newScene.engine = this;
             this.scenes.push(newScene);
         });
@@ -51,7 +55,7 @@ class Engine {
 
     switchScene(name) {
         this.scenes.forEach((scene) => {
-            if (scene.constructor.name == name) {
+            if (scene.name == name) {
                 if (scene.active) {
                     return;
                 }

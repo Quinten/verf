@@ -23,7 +23,7 @@
 
                     this.camera.events.once('flashcomplete', () => {
                         this.camera.events.once('fadecomplete', () => {
-                            this.engine.switchScene('SceneTwo');
+                            this.engine.switchScene('scenetwo');
                         });
                         this.camera.fade({duration: 2000, color: '#0000FF'});
                     });
@@ -43,7 +43,7 @@
 
                     this.camera.events.once('flashcomplete', () => {
                         this.camera.events.once('fadecomplete', () => {
-                            this.engine.switchScene('SceneOne');
+                            this.engine.switchScene('sceneone');
                         });
                         this.camera.fade({duration: 2000, color: '#0000FF'});
                     });
@@ -52,7 +52,10 @@
             }
 
             const game = new VerfGame({
-                scenes: [SceneOne, SceneTwo],
+                scenes: [
+                    { name: 'sceneone', class: SceneOne },
+                    { name: 'scenetwo', class: SceneTwo }
+                ],
                 width: 640,
                 height: 480,
                 zoom: 1,
