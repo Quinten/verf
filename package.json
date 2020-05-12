@@ -1,10 +1,11 @@
 {
   "name": "verf",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.0.3",
+  "description": "canvas 2d context game framework",
+  "color": "tomato",
   "main": "index.js",
   "scripts": {
-    "server": "node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Quinten/verf/issues"
   },
-  "homepage": "https://github.com/Quinten/verf#readme"
+  "homepage": "https://github.com/Quinten/verf#readme",
+  "directories": {
+    "example": "examples"
+  }
 }
