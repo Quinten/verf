@@ -9,7 +9,7 @@ class Engine {
             let newScene = new scene.class();
             newScene.name = scene.name;
             if (scene.options) {
-                newScene.options = options;
+                newScene.options = scene.options;
             }
             newScene.engine = this;
             this.scenes.push(newScene);
