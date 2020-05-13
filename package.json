@@ -4,9 +4,6 @@
   "description": "canvas 2d context game framework",
   "color": "tomato",
   "main": "index.js",
-  "scripts": {
-    "start": "node server.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Quinten/verf.git"
