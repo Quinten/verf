@@ -30,6 +30,7 @@
             }
 
             const game = new VerfGame({
+                /*
                 scenes: [
                     {
                         name: 'sceneone',
@@ -50,7 +51,13 @@
                         }
                     }
                 ],
-                background: '#75485e'
+                */
+                assets: [
+                    {name: 'clouds', type: 'image', src: 'assets/cloud.png'},
+                    {name: 'disk', type: 'image', src: 'assets/disk.png'}
+                ],
+                width: 512,
+                height: 512
             });
         </script>
     </body>

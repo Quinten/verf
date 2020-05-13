@@ -10,7 +10,8 @@ class VerfGame {
         zoom = 'auto',
         pixelArt = true,
         scenes = [],
-        background = 'transparent'
+        background = 'transparent',
+        assets = undefined
     } = {})
     {
         this.parent = document.querySelector(parent);
@@ -50,6 +51,9 @@ class VerfGame {
             this.setSize(width, height, this.zoom);
         }
 
+        if (assets) {
+            this.engine.startAssets = assets;
+        }
         this.engine.start();
     }
 

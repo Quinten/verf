@@ -19,8 +19,12 @@ class Engine {
     }
 
     start() {
-        if (this.scenes[0]) {
-            this.scenes[0].setup();
+        if (this.startAssets) {
+            console.log(this.startAssets);
+        } else {
+            if (this.scenes[0]) {
+                this.scenes[0].setup();
+            }
         }
         window.requestAnimationFrame(this.onFrame.bind(this));
     }
