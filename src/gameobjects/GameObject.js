@@ -14,10 +14,14 @@ class GameObject {
         this.height = 32;
         this.fillStyle = '#00FF00';
         this.scene = undefined;
+        this.visible = true;
     }
 
     render (context, offset)
     {
+        if (!this.visible) {
+            return;
+        }
         context.save();
         context.translate(Math.round(this.x - (offset.x * this.scrollFactorX)), Math.round(this.y - (offset.y * this.scrollFactorY)));
         context.rotate(this.rotation);

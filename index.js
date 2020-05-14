@@ -4,3 +4,4 @@ export {default as Scene} from './src/core/Scene.js';
 export {default as Camera} from './src/core/Camera.js';
 export {default as Events} from './src/core/Events.js';
 export {default as GameObject} from './src/gameobjects/GameObject.js';
+export {default as FlatImage} from './src/gameobjects/FlatImage.js';

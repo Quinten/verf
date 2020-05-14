@@ -1,6 +1,9 @@
+import Assets from './Assets.js';
+import Preloader from './Preloader.js';
+
 class Engine {
 
-    constructor (scenes, canvas, background)
+    constructor (scenes, canvas, background, foreground, startAssets)
     {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -16,15 +19,22 @@ class Engine {
         });
         this.time = 0;
         this.background = background;
+        this.foreground = foreground;
+
+        this.assets = new Assets();
+        if (startAssets) {
+            this.startAssets = startAssets;
+            let preloader = new Preloader();
+            preloader.name = 'verfdefaultpreloader';
+            preloader.options = {assets: this.startAssets, nextScene: ((this.scenes[0]) ? this.scenes[0].name : undefined)};
+            preloader.engine = this;
+            this.scenes.unshift(preloader);
+        }
     }
 
     start() {
-        if (this.startAssets) {
-            console.log(this.startAssets);
-        } else {
-            if (this.scenes[0]) {
-                this.scenes[0].setup();
-            }
+        if (this.scenes[0]) {
+            this.scenes[0].setup();
         }
         window.requestAnimationFrame(this.onFrame.bind(this));
     }

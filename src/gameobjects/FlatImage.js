@@ -15,9 +15,17 @@ class FlatImage extends GameObject {
 
     draw (context)
     {
-        //if you don't override this method you get a green square
-        context.fillStyle = this.fillStyle;
-        context.fillRect(-this.width/2, -this.height/2, this.width, this.height);
+        if (!this.img) {
+            this.img = this.scene.engine.assets.getByName(this.name);
+            if (!this.img) {
+                this.visible = false;
+                return;
+            } else {
+                this.width = this.img.width;
+                this.height = this.img.height;
+            }
+        }
+        context.drawImage(this.img, 0, 0, this.width, this.height, -(this.width / 2), -(this.height / 2), this.width, this.height);
     }
 
     destroy ()
