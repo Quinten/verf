@@ -1,0 +1,22 @@
+body {
+    background: #fcfff7;
+    color: #495867;
+    font-family: monospace;
+}
+
+a:link {
+    color: #639fab;
+}
+
+a:visited {
+    color: #83596e;
+}
+
+a:active,
+a:hover {
+    color: #4f828d;
+}
+
+a:focus {
+    color: #4f828d;
+}
