@@ -6,6 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
     </head>
     <body>
         <script type="module">
@@ -13,7 +14,7 @@
 
             class RedSquare extends GameObject {
                 draw(context) {
-                    context.fillStyle = '#ff0000';
+                    context.fillStyle = '#ff5e5b';
                     context.fillRect(-16, -16, 32, 32);
                 }
             }
@@ -57,7 +58,8 @@
             }
 
             const game = new VerfGame({
-                scenes: [{class: TestScene}]
+                scenes: [{class: TestScene}],
+                background: '#fcfff7'
             });
         </script>
     </body>

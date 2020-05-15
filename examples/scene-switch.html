@@ -6,6 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
     </head>
     <body>
         <script type="module">
@@ -16,7 +17,7 @@
                 {
                     // normal square in the world (for reference)
                     this.square = new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2});
-                    this.square.fillStyle = '#FF0000';
+                    this.square.fillStyle = '#ff5e5b';
                     this.square.width = 100;
                     this.square.height = 100;
                     this.add(this.square);
@@ -25,9 +26,9 @@
                         this.camera.events.once('fadecomplete', () => {
                             this.engine.switchScene('scenetwo');
                         });
-                        this.camera.fade({duration: 2000, color: '#0000FF'});
+                        this.camera.fade({duration: 2000, color: '#639fab'});
                     });
-                    this.camera.flash({duration: 2000, color: '#0000FF'});
+                    this.camera.flash({duration: 2000, color: '#639fab'});
                 }
             }
 
@@ -36,7 +37,7 @@
                 {
                     // normal square in the world (for reference)
                     this.square = new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2});
-                    this.square.fillStyle = '#00FF00';
+                    this.square.fillStyle = '#4c9f70';
                     this.square.width = 100;
                     this.square.height = 100;
                     this.add(this.square);
@@ -45,9 +46,9 @@
                         this.camera.events.once('fadecomplete', () => {
                             this.engine.switchScene('sceneone');
                         });
-                        this.camera.fade({duration: 2000, color: '#0000FF'});
+                        this.camera.fade({duration: 2000, color: '#639fab'});
                     });
-                    this.camera.flash({duration: 2000, color: '#0000FF'});
+                    this.camera.flash({duration: 2000, color: '#639fab'});
                 }
             }
 
@@ -60,7 +61,7 @@
                 height: 480,
                 zoom: 1,
                 resizable: false,
-                background: 'black'
+                background: '#495867'
             });
         </script>
     </body>

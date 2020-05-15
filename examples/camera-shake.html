@@ -6,6 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
     </head>
     <body>
         <script type="module">
@@ -16,7 +17,7 @@
                 {
                     // normal square in the world (for reference)
                     this.square = new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2});
-                    this.square.fillStyle = 'tomato';
+                    this.square.fillStyle = '#fcfff7';
                     this.square.width = 100;
                     this.square.height = 100;
                     this.add(this.square);
@@ -34,7 +35,7 @@
                 height: 480,
                 zoom: 1,
                 resizable: false,
-                background: 'black'
+                background: '#75485e'
             });
         </script>
     </body>
