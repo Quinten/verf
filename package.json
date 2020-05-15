@@ -1,6 +1,6 @@
 {
   "name": "verf",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "canvas 2d context game framework",
   "color": "tomato",
   "main": "index.js",
