@@ -18,6 +18,7 @@ class Engine {
             this.scenes.push(newScene);
         });
         this.time = 0;
+        this.delta = 17;
         this.background = background;
         this.foreground = foreground;
 
@@ -46,6 +47,7 @@ class Engine {
         if (delta > 200) {
             delta = 200;
         }
+        this.delta = delta;
         if (this.background == 'transparent') {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         } else {
