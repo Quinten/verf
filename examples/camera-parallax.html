@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf Camera parallax</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, FlatImage} from '../index.js';
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    let bgOne = this.add(new FlatImage({name: 'streetbg3', x: 224, y: 384}));
+                    bgOne.scrollFactorX = .125;
+
+                    let bgTwo = this.add(new FlatImage({name: 'streetbg2', x: 192, y: 384}));
+                    bgTwo.scrollFactorX = .250;
+
+                    let bgThree = this.add(new FlatImage({name: 'streetbg1', x: 160, y: 384}));
+                    bgThree.scrollFactorX = .375;
+
+                    this.disk = this.add(new FlatImage({name: 'disk', x: 0, y: 512}));
+                    this.camera.followTarget = this.disk;
+                    this.camera.lerpX = .1;
+                    this.camera.lerpY = .1;
+                    this.camera.setBounds(-920, 0, 1840, 1024);
+                }
+
+                update (time, delta) {
+                    this.disk.x = Math.sin(time / 480) * 640;
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [
+                    {name: 'testscene', class: TestScene}
+                ],
+                assets: [
+                    {name: 'streetbg1', type: 'image', src: 'assets/streetbg1.png'},
+                    {name: 'streetbg2', type: 'image', src: 'assets/streetbg2.png'},
+                    {name: 'streetbg3', type: 'image', src: 'assets/streetbg3.png'},
+                    {name: 'disk', type: 'image', src: 'assets/disk.png'}
+                ],
+                width: 512,
+                height: 512,
+                resizable: false,
+                zoom: 1,
+                background: '#a7a09a',
+                foreground: '#fcfff7'
+            });
+        </script>
+    </body>
+</html>
