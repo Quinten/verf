@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Verf retina support</title>
+        <title>Verf | Config no zoom but resize</title>
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
         <script type="module">
             import {VerfGame} from '../index.js';
             const config = {
-                zoom: ((window.devicePixelRatio) ? (1 / window.devicePixelRatio) : 1),
+                zoom: 1,
                 pixelArt: false
             };
             const game = new VerfGame(config);

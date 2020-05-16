@@ -2,22 +2,18 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Verf parent element</title>
+        <title>Verf | Config retina</title>
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="../styles.css" />
     </head>
     <body>
-        <div id="game-container"></div>
         <script type="module">
             import {VerfGame} from '../index.js';
             const config = {
-                parent: '#game-container',
-                width: 640,
-                height: 360,
-                zoom: 1,
-                resizable: false
+                zoom: ((window.devicePixelRatio) ? (1 / window.devicePixelRatio) : 1),
+                pixelArt: false
             };
             const game = new VerfGame(config);
         </script>
