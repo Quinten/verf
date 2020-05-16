@@ -15,7 +15,12 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    this.add(new FlatImage({name: 'clouds', x: this.viewport.width / 2, y: this.viewport.height / 2}));
+                    let clouds = new FlatImage({
+                        name: 'clouds',
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2
+                    });
+                    this.add(clouds);
                 }
             }
 
