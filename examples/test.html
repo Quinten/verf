@@ -10,72 +10,47 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, Sprite} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer} from '../index.js';
 
             class TestScene extends Scene {
                 init ()
                 {
-                    let alphaboy = new Sprite({
-                        name: 'alphaboy',
-                        x: this.viewport.width / 2,
-                        y: this.viewport.height / 2,
-                        frame: 2,
-                        width: 32,
-                        height: 32
+                    // normal square in the world (for reference)
+                    this.square = this.add(new GameObject({x: 1024, y: 1024}));
+                    this.square.fillStyle = '#fcfff7';
+                    this.square.width = 96;
+                    this.square.height = 96;
+
+                    this.camera.followTarget = this.square;
+
+                    this.pointer = this.addControls(new Pointer());
+
+                    this.pointer.on('pointerup', (e) => {
+                        console.log(e);
+                        if (e.worldX < this.square.x - this.square.width / 2) {
+                            return;
+                        }
+                        if (e.worldX > this.square.x + this.square.width / 2) {
+                            return;
+                        }
+                        if (e.worldY < this.square.y - this.square.height / 2) {
+                            return;
+                        }
+                        if (e.worldY > this.square.y + this.square.height / 2) {
+                            return;
+                        }
+                        this.camera.shake();
                     });
-
-                    alphaboy.addAnimation({
-                        name: 'run-right',
-                        frames: [1, 2, 3],
-                        fps: 12,
-                        loop: -1 // loop forever
-                    });
-
-                    alphaboy.addAnimation({
-                        name: 'run-left',
-                        frames: [6, 7, 8],
-                        fps: 12,
-                        loop: 4 // plays the animation 5 times
-                    });
-
-                    // start an animation
-                    alphaboy.animation = 'run-right';
-
-                    // add sprite to the scene
-                    this.add(alphaboy);
-
-                    // on click switch animation
-                    document.querySelector('canvas').addEventListener('click', () => {
-                        alphaboy.animation = (alphaboy.animation == 'run-left') ? 'run-right' : 'run-left';
-                    });
-
-                    alphaboy.events.on('animationstopped', () => {
-                        // when animation stops switch texture (name)
-                        alphaboy.name = (alphaboy.name == 'alphaboy') ? 'hopboy' : 'alphaboy';
-                        // start the animation again
-                        alphaboy.animation = 'run-right';
-                    });
-
-                    // to stop animating and freeze on the current frame
-                    //alphaboy.animation = undefined;
                 }
             }
 
             const game = new VerfGame({
-                scenes: [
-                    {
-                        name: 'testscene',
-                        class: TestScene
-                    }
-                ],
-                assets: [
-                    {name: 'alphaboy', type: 'image', src: 'assets/alphaboy.png'},
-                    {name: 'hopboy', type: 'image', src: 'assets/hopboy.png'}
-                ],
-                width: 128,
-                height: 128,
-                background: '#639fab',
-                foreground: '#fcfff7'
+                scenes: [{class: TestScene}],
+                width: 320,
+                height: 240,
+                zoom: 2,
+                resizable: false,
+                background: '#75485e'
             });
         </script>
     </body>

@@ -15,8 +15,18 @@ class Scene {
         this.camera.x = this.viewport.width / 2;
         this.camera.y = this.viewport.height / 2;
         this.children = [];
+        this.controls = [];
+
         this.init();
         this.active = true;
+    }
+
+    addControls(controls)
+    {
+        controls.scene = this;
+        this.controls.push(controls);
+        controls.init();
+        return controls;
     }
 
     add(child)
@@ -78,10 +88,17 @@ class Scene {
     shutdown()
     {
         this.children.forEach((child) => {
-            child.scene = undefined;
             child.destroy();
+            child.scene = undefined;
         });
         this.children = [];
+
+        this.controls.forEach((controls) => {
+            controls.destroy();
+            controls.scene = undefined;
+        });
+        this.controls = [];
+
         this.camera.events.off();
         this.active = false;
     }
