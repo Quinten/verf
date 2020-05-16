@@ -10,22 +10,25 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer} from '../index.js';
 
             class SceneWithOptions extends Scene {
                 init ()
                 {
                     // normal square in the world (for reference)
-                    this.square = new GameObject({x: this.viewport.width / 2 + this.options.squareOffsetX, y: this.viewport.height / 2});
-                    this.square.fillStyle = this.options.squareFill;
-                    this.add(this.square);
+                    let square = new GameObject({x: this.viewport.width / 2 + this.options.squareOffsetX, y: this.viewport.height / 2});
+                    square.fillStyle = this.options.squareFill;
+                    this.add(square);
 
-                    this.camera.events.once('flashcomplete', () => {
+                    let pointer = this.addControls(new Pointer());
+
+                    pointer.once('pointerup', () => {
                         this.camera.events.once('fadecomplete', () => {
                             this.engine.switchScene(this.options.nextScene);
                         });
                         this.camera.fade({color: '#fcfff7'});
                     });
+
                     this.camera.flash({color: '#fcfff7'});
                 }
             }

@@ -15,31 +15,80 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    // normal square in the world (for reference)
-                    this.square = this.add(new GameObject({x: 1024, y: 1024}));
-                    this.square.fillStyle = '#fcfff7';
-                    this.square.width = 96;
-                    this.square.height = 96;
+                    let square = this.add(new GameObject({x: 1024, y: 1024}));
+                    square.fillStyle = '#fcfff7';
+                    square.width = 96;
+                    square.height = 96;
 
-                    this.camera.followTarget = this.square;
+                    this.camera.followTarget = square;
 
-                    this.pointer = this.addControls(new Pointer());
+                    let horLine = this.add(new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2}));
+                    horLine.fillStyle = '#fcfff7';
+                    horLine.width = this.viewport.width;
+                    horLine.height = 2;
+                    horLine.scrollFactorX = 0;
+                    horLine.scrollFactorY = 0;
 
-                    this.pointer.on('pointerup', (e) => {
-                        console.log(e);
-                        if (e.worldX < this.square.x - this.square.width / 2) {
+                    let vertLine = this.add(new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2}));
+                    vertLine.fillStyle = '#fcfff7';
+                    vertLine.width = 2;
+                    vertLine.height = this.viewport.height;
+                    vertLine.scrollFactorX = 0;
+                    vertLine.scrollFactorY = 0;
+
+                    let pointer = this.addControls(new Pointer());
+
+                    pointer.on('pointerdown', (e) => {
+
+                        vertLine.x = e.viewportX;
+                        horLine.y = e.viewportY;
+
+                        if (e.worldX < square.x - square.width / 2) {
+                            this.camera.flash({color: '#fcfff7'});
                             return;
                         }
-                        if (e.worldX > this.square.x + this.square.width / 2) {
+                        if (e.worldX > square.x + square.width / 2) {
+                            this.camera.flash({color: '#fcfff7'});
                             return;
                         }
-                        if (e.worldY < this.square.y - this.square.height / 2) {
+                        if (e.worldY < square.y - square.height / 2) {
+                            this.camera.flash({color: '#fcfff7'});
                             return;
                         }
-                        if (e.worldY > this.square.y + this.square.height / 2) {
+                        if (e.worldY > square.y + square.height / 2) {
+                            this.camera.flash({color: '#fcfff7'});
+                            return;
+                        }
+                    });
+
+                    pointer.on('pointerup', (e) => {
+                        if (e.worldX < square.x - square.width / 2) {
+                            return;
+                        }
+                        if (e.worldX > square.x + square.width / 2) {
+                            return;
+                        }
+                        if (e.worldY < square.y - square.height / 2) {
+                            return;
+                        }
+                        if (e.worldY > square.y + square.height / 2) {
                             return;
                         }
                         this.camera.shake();
+                    });
+
+                    pointer.on('pointermove', (e) => {
+
+                        // this check is optional...
+                        // on mobile pointermove will not fire
+                        // if there is no pointer down
+                        // this way you can get the same behavior on desktop
+                        if (!pointer.isDown) {
+                            return;
+                        }
+
+                        vertLine.x = e.viewportX;
+                        horLine.y = e.viewportY;
                     });
                 }
             }
