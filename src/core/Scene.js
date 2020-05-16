@@ -23,6 +23,7 @@ class Scene {
     {
         child.scene = this;
         this.children.push(child);
+        return child;
     }
 
     remove(child)
