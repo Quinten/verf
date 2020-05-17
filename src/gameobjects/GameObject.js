@@ -15,6 +15,22 @@ class GameObject {
         this.fillStyle = '#00FF00';
         this.scene = undefined;
         this.visible = true;
+        this.body = undefined;
+        this.offsetX = 0;
+        this.offsetY = 0;
+    }
+
+    addBody(body)
+    {
+        body.width = this.width;
+        body.height = this.height;
+        body.x = this.x - body.halfWidth;
+        body.y = this.y - body.halfHeight;
+        if (this.scene.world) {
+           this.scene.world.addBody(body);
+        }
+        this.body = body;
+        return this.body;
     }
 
     render (context, offset)
@@ -38,6 +54,7 @@ class GameObject {
 
     destroy()
     {
+        this.body = undefined;
     }
 }
 export default GameObject;

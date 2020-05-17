@@ -8,6 +8,7 @@ class Scene {
         this.viewport = {width: 320, height: 180, zoom: 1};
         this.camera = new Camera();
         this.engine = undefined;
+        this.world = undefined;
     }
 
     setup()
@@ -19,6 +20,12 @@ class Scene {
 
         this.init();
         this.active = true;
+    }
+
+    addWorld(world)
+    {
+        this.world = world;
+        return this.world;
     }
 
     addControls(controls)
@@ -38,6 +45,10 @@ class Scene {
 
     remove(child)
     {
+        if (this.world && child.body) {
+            this.world.removeBody(child.body);
+        }
+        child.destroy();
         child.scene = undefined;
         this.children.splice(this.children.indexOf(child), 1);
     }
@@ -59,8 +70,17 @@ class Scene {
 
     render (context, time, delta)
     {
+        if (this.world) {
+            this.world.step(delta);
+        }
         let offset = this.camera.getOffset(time, delta);
         this.children.forEach((child) => {
+
+            if (child.body) {
+                child.x = child.body.midX + child.offsetX;
+                child.y = child.body.midY + child.offsetY;
+            }
+
             // cull child
             // check if child is in viewport first
             // left
@@ -101,6 +121,11 @@ class Scene {
 
         this.camera.events.off();
         this.active = false;
+
+        if (this.world) {
+            this.world.destroy();
+            this.world = undefined;
+        }
     }
 }
 export default Scene;
