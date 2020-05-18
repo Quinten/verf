@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Game objects visible</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, Sprite, Pointer} from '../index.js';
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    let alphaboy = this.add(new Sprite({
+                        name: 'alphaboy',
+                        x: this.viewport.width / 2 - 16,
+                        y: this.viewport.height / 2 - 6,
+                        frame: 14,
+                        width: 32,
+                        height: 32
+                    }));
+
+                    let hopboy = this.add(new Sprite({
+                        name: 'hopboy',
+                        x: this.viewport.width / 2 + 16,
+                        y: this.viewport.height / 2 - 6,
+                        frame: 15,
+                        width: 32,
+                        height: 32
+                    }));
+
+                    hopboy.visible = false;
+
+                    this.addControls(new Pointer()).on('pointerup', (e) => {
+
+                        alphaboy.visible = !alphaboy.visible;
+                        hopboy.visible = !hopboy.visible;
+
+                    });
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [
+                    {
+                        name: 'testscene',
+                        class: TestScene
+                    }
+                ],
+                assets: [
+                    {name: 'alphaboy', type: 'image', src: 'assets/alphaboy.png'},
+                    {name: 'hopboy', type: 'image', src: 'assets/hopboy.png'}
+                ],
+                width: 64,
+                height: 32,
+                background: '#495867',
+                foreground: '#4c9f70'
+            });
+        </script>
+    </body>
+</html>
