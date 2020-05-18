@@ -2,7 +2,28 @@
 
 a humble html5 canvas game framework
 
+meant to be modular and extendible
+
 coded for fun and inspired by Flixel and Phaser
+
+## Why anotoher html5 game framework?
+
+Read more about the motivation in [this blogpost](https://supernapie.com/blog/may-2020-update).
+
+## Usage
+
+```
+npm i verf
+```
+
+```
+import {VerfGame} from 'verf';
+const game = new VerfGame();
+```
+
+For all available exports, see [index.js](https://github.com/Quinten/verf/blob/master/index.js).
+
+The api isn't yet in it's final form as it's still in version 0.x.x
 
 ## Examples
 
@@ -24,7 +45,7 @@ node server.js > /dev/null &!
 
 ### Colors
 
-The following pallette is used for the examples.
+The following colors are used for the examples.
 
 https://coolors.co/75485e-ff5e5b-fcfff7-639fab-4c9f70
 
