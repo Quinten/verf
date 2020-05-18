@@ -7,7 +7,6 @@ class GameObject {
     {
         this.x = x;
         this.y = y;
-        this.rotation = 0;
         this.scrollFactorX = 1;
         this.scrollFactorY = 1;
         this.width = 32;
@@ -40,7 +39,6 @@ class GameObject {
         }
         context.save();
         context.translate(Math.round(this.x - (offset.x * this.scrollFactorX)), Math.round(this.y - (offset.y * this.scrollFactorY)));
-        context.rotate(this.rotation);
         this.draw(context);
         context.restore();
     }
