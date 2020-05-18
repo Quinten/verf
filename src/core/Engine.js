@@ -31,6 +31,8 @@ class Engine {
             preloader.engine = this;
             this.scenes.unshift(preloader);
         }
+
+        this.timeouts = [];
     }
 
     start() {
@@ -48,6 +50,12 @@ class Engine {
             delta = 200;
         }
         this.delta = delta;
+        for (let t = this.timeouts.length - 1; t >= 0; t--) {
+            if (this.timeouts[t].end <= this.time) {
+                this.timeouts[t].callback();
+                this.clearTimeout(this.timeouts[t]);
+            }
+        }
         if (this.background == 'transparent') {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         } else {
@@ -80,6 +88,19 @@ class Engine {
                 scene.shutdown();
             }
         });
+    }
+
+    setTimeout(callback, duration)
+    {
+        let end = this.time + duration;
+        let timeout = {callback, end};
+        this.timeouts.push(timeout);
+        return timeout;
+    }
+
+    clearTimeout(timeout)
+    {
+        this.timeouts.splice(this.timeouts.indexOf(timeout), 1);
     }
 }
 export default Engine;

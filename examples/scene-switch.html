@@ -23,10 +23,12 @@
                     this.add(this.square);
 
                     this.camera.events.once('flashcomplete', () => {
-                        this.camera.events.once('fadecomplete', () => {
-                            this.engine.switchScene('scenetwo');
-                        });
-                        this.camera.fade({duration: 2000, color: '#639fab'});
+                        this.engine.setTimeout(() => {
+                            this.camera.events.once('fadecomplete', () => {
+                                this.engine.switchScene('scenetwo');
+                            });
+                            this.camera.fade({duration: 2000, color: '#639fab'});
+                        }, 2000);
                     });
                     this.camera.flash({duration: 2000, color: '#639fab'});
                 }
@@ -43,10 +45,12 @@
                     this.add(this.square);
 
                     this.camera.events.once('flashcomplete', () => {
-                        this.camera.events.once('fadecomplete', () => {
-                            this.engine.switchScene('sceneone');
-                        });
-                        this.camera.fade({duration: 2000, color: '#639fab'});
+                        this.engine.setTimeout(() => {
+                            this.camera.events.once('fadecomplete', () => {
+                                this.engine.switchScene('sceneone');
+                            });
+                            this.camera.fade({duration: 2000, color: '#639fab'});
+                        }, 2000);
                     });
                     this.camera.flash({duration: 2000, color: '#639fab'});
                 }
