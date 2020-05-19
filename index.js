@@ -14,6 +14,7 @@ export {default as Sprite} from './src/gameobjects/Sprite.js';
 
 export {default as Controls} from './src/controls/Controls.js';
 export {default as Pointer} from './src/controls/Pointer.js';
+export {default as Keys} from './src/controls/Keys.js';
 
 export {default as World} from './src/physics/World.js';
 export {default as Body} from './src/physics/Body.js';

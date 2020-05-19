@@ -33,6 +33,14 @@ class Engine {
         }
 
         this.timeouts = [];
+
+        // bring focus to the window in an iframe
+        window.addEventListener('load', () => {
+            window.focus();
+            document.body.addEventListener('click', (e) => {
+                window.focus();
+            }, false);
+        });
     }
 
     start() {
