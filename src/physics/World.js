@@ -7,7 +7,7 @@ class World {
         gravityY = 0
     } = {}) {
         this.gravityX = gravityX;
-        this.gravityY = gravityX;
+        this.gravityY = gravityY;
         this.worldBoundsRestitution = 1;
         this.bodies = [];
         this.colliders = [];

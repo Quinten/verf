@@ -15,17 +15,9 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World());
-                    world.setBounds(this.camera.x - this.viewport.width / 2, this.camera.y - this.viewport.height / 2, this.viewport.width, this.viewport.height);
-
-                    let palette = this.add(new GameObject({x: this.viewport.width / 2, y: 32}));
-                    palette.fillStyle = this.engine.foreground;
-                    palette.width = 48;
-                    palette.height = 8;
-                    palette.addBody(new Body());
-                    palette.body.restitution = 1;
-
-                    this.palette = palette;
+                    let world = this.addWorld(new World({gravityY: .001}));
+                    world.setBounds(0, 0, 320, 240);
+                    world.worldBoundsRestitution = 0;
 
                     this.keys = this.addControls(new Keys());
                     // press r or y to restart
@@ -33,16 +25,16 @@
                         this.restart();
                     });
 
-                    let ball = this.add(new GameObject({x: this.viewport.width / 2, y: 256}));
-                    ball.fillStyle = this.engine.foreground;
-                    ball.width = 8;
-                    ball.height = 8;
-                    ball.addBody(new Body());
-                    ball.body.immovable = false;
-                    ball.body.collideWorldBounds = true;
-                    ball.body.vy = -0.2;
-                    ball.body.vx = (-0.5 + Math.random()) * 0.1;
+                    let player = this.add(new GameObject({x: 160, y: 120}));
+                    player.fillStyle = this.engine.foreground;
+                    player.width = 24;
+                    player.height = 24;
+                    player.addBody(new Body());
+                    player.body.immovable = false;
+                    player.body.collideWorldBounds = true;
+                    player.body.allowGravity = true;
 
+                    /*
                     world.addCollider({
                         a: ball,
                         b: palette,
@@ -50,7 +42,9 @@
                             ball.body.vx += this.palette.body.vx; // this allows the player to add an effect to the ball
                         }
                     });
+                    */
 
+                    /*
                     for (let y = -1; y <= 1; y++) {
                         for (let x = -2; x <= 2; x++) {
                             let brick = this.add(new GameObject({x: this.viewport.width / 2 + x * 40, y: 360 + y * 16}));
@@ -71,10 +65,12 @@
                             });
                         }
                     }
+                    */
                 }
 
                 update(time, delta)
                 {
+                /*
                     if (this.keys.left) {
                         this.palette.body.vx = -0.1;
                     } else if (this.keys.right){
@@ -82,19 +78,16 @@
                     } else {
                         this.palette.body.vx = 0;
                     }
-                }
-
-                resize(w, h) {
-                    if (this.world) {
-                        this.world.setBounds(this.camera.x - w / 2, this.camera.y - h / 2, w, h);
-                    }
+                */
                 }
             }
 
             const game = new VerfGame({
                 scenes: [{class: TestScene}],
                 width: 320,
-                height: 400,
+                height: 240,
+                resizable: false,
+                zoom: 2,
                 background: '#639fab',
                 foreground: '#fcfff7'
             });
