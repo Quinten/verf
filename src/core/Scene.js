@@ -105,6 +105,12 @@ class Scene {
         this.camera.postRender(context, time, delta);
     }
 
+    restart()
+    {
+        this.shutdown();
+        this.setup();
+    }
+
     shutdown()
     {
         this.children.forEach((child) => {

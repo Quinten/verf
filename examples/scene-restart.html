@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Scene restart</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, GameObject} from '../index.js';
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    // normal square in the world (for reference)
+                    let square = this.add(new GameObject({x: this.viewport.width / 2, y: this.viewport.height / 2}));
+                    square.fillStyle = '#ff5e5b';
+                    square.width = 100;
+                    square.height = 100;
+
+                    this.camera.events.once('flashcomplete', () => {
+                        this.engine.setTimeout(() => {
+                            this.camera.events.once('fadecomplete', () => {
+
+                                this.restart();
+
+                            });
+                            this.camera.fade({duration: 2000, color: '#639fab'});
+                        }, 2000);
+                    });
+                    this.camera.flash({duration: 2000, color: '#639fab'});
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [
+                    { name: 'testscene', class: TestScene }
+                ],
+                width: 640,
+                height: 480,
+                zoom: 1,
+                resizable: false,
+                background: '#495867'
+            });
+        </script>
+    </body>
+</html>
