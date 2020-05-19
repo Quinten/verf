@@ -1,25 +1,13 @@
 class Body {
 
-    static get KINEMATIC() { return 'kinematic'; }
-    static get DYNAMIC() { return 'dynamic'; }
-
-    static get DISPLACE() { return 'displace'; }
-    static get ELASTIC() { return 'elastic'; }
-
-    constructor ({
-        type = Body.DYNAMIC,
-        collision = Body.ELASTIC
-    } = {})
+    constructor ()
     {
-        this.type = type;
-        this.collision = collision;
-        this.width = 32;
-        this.height = 32;
-        // bouncyness
-        this.restitution = 0;
         // position
         this.x = 0;
         this.y = 0;
+        // size
+        this.width = 32;
+        this.height = 32;
         // velocity
         this.vx = 0;
         this.vy = 0;
@@ -27,6 +15,13 @@ class Body {
         this.ax = 0;
         this.ay = 0;
 
+        // gravity
+        this.allowGravity = false;
+        // displaced by collisions
+        this.immovable = true;
+        // bouncyness
+        this.restitution = 0;
+        // bounce of edges
         this.collideWorldBounds = false;
     }
 

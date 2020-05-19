@@ -81,36 +81,27 @@ class World {
         // then this object is approaching from a corner
         if (Math.abs(absDX - absDY) < .1) {
 
-            // If a is approaching from positive X
+            // If a is approaching from the right
             if (dx < 0) {
-
-                // Set a.x to the right side
                 a.x = b.right;
 
-            // If a is approaching from negative X
+            // If a is approaching from the left
             } else {
-
-                // Set a to the left side
                 a.x = b.left - a.width;
             }
 
-            // If a is approaching from positive Y
+            // If a is approaching from the bottom
             if (dy < 0) {
-
-                // Set a to the bottom
                 a.y = b.bottom;
 
-            // If a is approaching from negative Y
+            // If a is approaching from the top
             } else {
-
-                // Set the player y to the top
                 a.y = b.top - a.height;
             }
 
             // Randomly select a x/y direction to reflect velocity on
             if (Math.random() < .5) {
 
-                // Reflect the velocity at a reduced rate
                 a.vx = -a.vx * b.restitution;
 
                 // If the object's velocity is nearing 0, set it to 0
@@ -130,35 +121,34 @@ class World {
         // If a is approaching from the sides
         } else if (absDX > absDY) {
 
-            // If a is approaching from positive X
+            // If a is approaching from the right
             if (dx < 0) {
                 a.x = b.right;
             } else {
-            // If a is approaching from negative X
+            // If a is approaching from the left
                 a.x = b.left - a.width;
             }
 
-            // Velocity component
             a.vx = -a.vx * b.restitution;
 
             if (Math.abs(a.vx) < .0004) {
                 a.vx = 0;
             }
 
-        // If this collision is coming from the top or bottom more
+        // If this collision is coming from the top or bottom
         } else {
 
-            // If a is approaching from positive Y
+            // If a is approaching from the bottom
             if (dy < 0) {
                 a.y = b.bottom;
 
             } else {
-            // If a is approaching from negative Y
+            // If a is approaching from the top
                 a.y = b.top - a.height;
             }
 
-            // Velocity component
             a.vy = -a.vy * b.restitution;
+
             if (Math.abs(a.vy) < .0004) {
                 a.vy = 0;
             }
@@ -171,29 +161,27 @@ class World {
         let gy = this.gravityY * delta;
 
         this.bodies.forEach((body) => {
-            switch (body.type) {
-                case Body.DYNAMIC:
-                    body.vx += body.ax * delta + gx;
-                    body.vy += body.ay * delta + gy;
-                    body.x  += body.vx * delta;
-                    body.y  += body.vy * delta;
-                    break;
-                case Body.KINEMATIC:
-                    body.vx += body.ax * delta;
-                    body.vy += body.ay * delta;
-                    body.x  += body.vx * delta;
-                    body.y  += body.vy * delta;
-                    break;
-             }
+
+            if (body.allowGravity) {
+                body.vx += body.ax * delta + gx;
+                body.vy += body.ay * delta + gy;
+            } else {
+                body.vx += body.ax * delta;
+                body.vy += body.ay * delta;
+            }
+
+            body.x  += body.vx * delta;
+            body.y  += body.vy * delta;
         });
 
         this.colliders.forEach((collider) => {
             if (this.collideRect(collider.a, collider.b)) {
-                if (collider.a.type == Body.DYNAMIC && collider.b.type == Body.KINEMATIC) {
+
+                if (!collider.a.immovable && collider.b.immovable) {
                     this.seperateAFromB(collider.a, collider.b);
-                } else if (collider.a.type == Body.KINEMATIC && collider.b.type == Body.DYNAMIC) {
+                } else if (collider.a.immovable && !collider.b.immovable) {
                     this.seperateAFromB(collider.b, collider.a);
-                } else if (collider.a.type == Body.DYNAMIC && collider.b.type == Body.DYNAMIC) {
+                } else if (!collider.a.immovable && !collider.b.immovable) {
                     // TODO: create a seperateBoth function
                 }
                 if (collider.callback) {
