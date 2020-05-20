@@ -40,8 +40,8 @@
                     ball.addBody(new Body());
                     ball.body.immovable = false;
                     ball.body.collideWorldBounds = true;
-                    ball.body.vy = -0.2;
-                    ball.body.vx = (-0.5 + Math.random()) * 0.1;
+                    ball.body.vy = -200;
+                    ball.body.vx = (-0.5 + Math.random()) * 100;
 
                     world.addCollider({
                         a: ball,
@@ -76,9 +76,9 @@
                 update(time, delta)
                 {
                     if (this.keys.left) {
-                        this.palette.body.vx = -0.1;
+                        this.palette.body.vx = -100;
                     } else if (this.keys.right){
-                        this.palette.body.vx = 0.1;
+                        this.palette.body.vx = 100;
                     } else {
                         this.palette.body.vx = 0;
                     }

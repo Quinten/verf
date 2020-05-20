@@ -37,8 +37,8 @@
                     ball.addBody(new Body());
                     ball.body.immovable = false;
                     ball.body.collideWorldBounds = true;
-                    ball.body.vy = -0.2;
-                    ball.body.vx = (-0.5 + Math.random()) * 0.1;
+                    ball.body.vy = -200;
+                    ball.body.vx = (-0.5 + Math.random()) * 100;
 
                     this.palette = palette;
                     this.oldPaletteX = this.palette.x;
@@ -76,7 +76,7 @@
 
                 update(time, delta)
                 {
-                    this.paletteV = (this.palette.x - this.oldPaletteX) / delta;
+                    this.paletteV = (this.palette.x - this.oldPaletteX) / delta * 1000;
                     this.oldPaletteX = this.palette.x;
                 }
 

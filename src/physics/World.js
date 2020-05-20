@@ -157,6 +157,8 @@ class World {
 
     step(delta)
     {
+        delta = delta / 1000; // convert delta to seconds, so we can define velocity in pixels per second
+
         let gx = this.gravityX * delta;
         let gy = this.gravityY * delta;
 

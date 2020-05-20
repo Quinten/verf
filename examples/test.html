@@ -15,7 +15,7 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World({gravityY: .001}));
+                    let world = this.addWorld(new World({gravityY: 512}));
                     world.setBounds(0, 0, 320, 240);
                     world.worldBoundsRestitution = 0;
 
