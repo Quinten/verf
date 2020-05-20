@@ -25,8 +25,17 @@
                         this.restart();
                     });
 
-                    let player = this.add(new GameObject({x: 160, y: 120}));
-                    player.fillStyle = this.engine.foreground;
+                    let crate = this.add(new GameObject({x: 220, y: 96}));
+                    crate.fillStyle = '#ff5e5b';
+                    crate.width = 24;
+                    crate.height = 24;
+                    crate.addBody(new Body());
+                    crate.body.immovable = false;
+                    crate.body.collideWorldBounds = true;
+                    crate.body.allowGravity = true;
+
+                    let player = this.add(new GameObject({x: 160, y: 192}));
+                    player.fillStyle = '#639fab';
                     player.width = 24;
                     player.height = 24;
                     player.addBody(new Body());
@@ -34,51 +43,66 @@
                     player.body.collideWorldBounds = true;
                     player.body.allowGravity = true;
 
-                    /*
-                    world.addCollider({
-                        a: ball,
-                        b: palette,
-                        callback: () => {
-                            ball.body.vx += this.palette.body.vx; // this allows the player to add an effect to the ball
-                        }
+                    this.player = player;
+
+                    this.keys.on('aup', () => {
+                        player.body.vy = -320;
                     });
-                    */
 
-                    /*
-                    for (let y = -1; y <= 1; y++) {
-                        for (let x = -2; x <= 2; x++) {
-                            let brick = this.add(new GameObject({x: this.viewport.width / 2 + x * 40, y: 360 + y * 16}));
-                            brick.fillStyle = this.engine.foreground;
-                            brick.width = 32;
-                            brick.height = 8;
-                            brick.addBody(new Body());
-                            brick.body.restitution = 1;
+                    world.addCollider({
+                        a: player,
+                        b: crate
+                    });
 
-                            world.addCollider({
-                                a: ball,
-                                b: brick,
-                                callback: () => {
-                                    this.remove(brick);
-                                    this.camera.shake();
-                                    this.camera.flash({color: this.engine.foreground, duration: 100 });
-                                }
-                            });
-                        }
-                    }
-                    */
+                    let platform = this.add(new GameObject({x: 40, y: 192}));
+                    platform.fillStyle = '#fcfff7';
+                    platform.width = 80;
+                    platform.height = 20;
+                    platform.addBody(new Body());
+                    platform.body.immovable = true;
+                    platform.body.collideWorldBounds = true;
+                    platform.body.allowGravity = false;
+
+                    world.addCollider({
+                        a: player,
+                        b: platform
+                    });
+
+                    world.addCollider({
+                        a: crate,
+                        b: platform
+                    });
+
+                    platform = this.add(new GameObject({x: 220, y: 120}));
+                    platform.fillStyle = '#fcfff7';
+                    platform.width = 120;
+                    platform.height = 20;
+                    platform.addBody(new Body());
+                    platform.body.immovable = true;
+                    platform.body.collideWorldBounds = true;
+                    platform.body.allowGravity = false;
+
+                    world.addCollider({
+                        a: player,
+                        b: platform
+                    });
+
+                    world.addCollider({
+                        a: crate,
+                        b: platform
+                    });
+
                 }
 
                 update(time, delta)
                 {
-                /*
                     if (this.keys.left) {
-                        this.palette.body.vx = -0.1;
+                        this.player.body.vx = -160;
                     } else if (this.keys.right){
-                        this.palette.body.vx = 0.1;
+                        this.player.body.vx = 160;
                     } else {
-                        this.palette.body.vx = 0;
+                        this.player.body.vx = 0;
                     }
-                */
                 }
             }
 
@@ -88,7 +112,7 @@
                 height: 240,
                 resizable: false,
                 zoom: 2,
-                background: '#639fab',
+                background: '#495867',
                 foreground: '#fcfff7'
             });
         </script>
