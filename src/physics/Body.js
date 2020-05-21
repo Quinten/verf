@@ -23,6 +23,10 @@ class Body {
         // friction
         this.frictionX = 0;
         this.frictionY = 0;
+        // blocked collision flags
+        this.blocked = {none: true, top: false, right: false, bottom: false, left: false};
+        // touching collision flags
+        this.touching = {none: true, top: false, right: false, bottom: false, left: false};
     }
 
     get width()

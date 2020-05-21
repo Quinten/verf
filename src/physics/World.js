@@ -85,19 +85,23 @@ class World {
             // If a is approaching from the right
             if (dx < 0) {
                 a.x = b.right;
+                a.blocked.left = true;
 
             // If a is approaching from the left
             } else {
                 a.x = b.left - a.width;
+                a.blocked.right = true;
             }
 
             // If a is approaching from the bottom
             if (dy < 0) {
                 a.y = b.bottom;
+                a.blocked.top = true;
 
             // If a is approaching from the top
             } else {
                 a.y = b.top - a.height;
+                a.blocked.bottom = true;
             }
 
             // Randomly select a x/y direction to reflect velocity on
@@ -129,9 +133,11 @@ class World {
             // If a is approaching from the right
             if (dx < 0) {
                 a.x = b.right;
+                a.blocked.left = true;
             } else {
             // If a is approaching from the left
                 a.x = b.left - a.width;
+                a.blocked.right = true;
             }
 
             a.vx = -a.vx * b.restitution;
@@ -147,10 +153,11 @@ class World {
             // If a is approaching from the bottom
             if (dy < 0) {
                 a.y = b.bottom;
-
+                a.blocked.top = true;
             } else {
             // If a is approaching from the top
                 a.y = b.top - a.height;
+                a.blocked.bottom = true;
             }
 
             a.vy = -a.vy * b.restitution;
@@ -160,6 +167,8 @@ class World {
                 a.vy = 0;
             }
         }
+
+        a.blocked.none = false;
     }
 
     seperateBoth(a, b, delta)
@@ -184,11 +193,17 @@ class World {
                 a.x += overlap;
                 b.x -= overlap;
 
+                a.touching.left = true;
+                b.touching.right = true;
+
             // If a is approaching from the left
             } else {
                 let overlap = (a.right - b.left) / 2;
                 a.x -= overlap;
                 b.x += overlap;
+
+                a.touching.right = true;
+                b.touching.left = true;
             }
 
             // If a is approaching from the bottom
@@ -197,11 +212,17 @@ class World {
                 a.y += overlap;
                 b.y -= overlap;
 
+                a.touching.top = true;
+                b.touching.bottom = true;
+
             // If a is approaching from the top
             } else {
                 let overlap = (a.bottom - b.top) / 2;
                 a.y -= overlap;
                 b.y += overlap;
+
+                a.touching.bottom = true;
+                b.touching.top = true;
             }
 
         // If a is approaching from the sides
@@ -212,6 +233,9 @@ class World {
                 let overlap = (b.right - a.left) / 2;
                 a.x += overlap;
                 b.x -= overlap;
+
+                a.touching.left = true;
+                b.touching.right = true;
 
                 if (this.gravityX > 0) {
                     b.vy = 0;
@@ -225,6 +249,9 @@ class World {
                 let overlap = (a.right - b.left) / 2;
                 a.x -= overlap;
                 b.x += overlap;
+
+                a.touching.right = true;
+                b.touching.left = true;
 
                 if (this.gravityX > 0) {
                     a.vy = 0;
@@ -244,6 +271,9 @@ class World {
                 a.y += overlap;
                 b.y -= overlap;
 
+                a.touching.top = true;
+                b.touching.bottom = true;
+
                 if (this.gravityY > 0) {
                     b.vy = 0;
                     b.x += a.vx * a.frictionX * delta;
@@ -257,6 +287,9 @@ class World {
                 let overlap = (a.bottom - b.top) / 2;
                 a.y -= overlap;
                 b.y += overlap;
+
+                a.touching.bottom = true;
+                b.touching.top = true;
 
                 if (this.gravityY > 0) {
                     a.vy = 0;
@@ -285,6 +318,19 @@ class World {
 
             body.x += body.vx * delta;
             body.y += body.vy * delta;
+
+            // reset collision flags
+            body.blocked.none = true;
+            body.blocked.top = false;
+            body.blocked.right = false;
+            body.blocked.bottom = false;
+            body.blocked.left = false;
+
+            body.touching.none = true;
+            body.touching.top = false;
+            body.touching.right = false;
+            body.touching.bottom = false;
+            body.touching.left = false;
         });
 
         this.colliders.forEach((collider) => {
@@ -311,18 +357,22 @@ class World {
                     if (body.left < this.bounds.x) {
                         body.x = this.bounds.x;
                         body.vx = -body.vx * this.worldBoundsRestitution;
+                        body.blocked.left = true;
                     }
                     if (body.top < this.bounds.y) {
                         body.y = this.bounds.y;
                         body.vy = -body.vy * this.worldBoundsRestitution;
+                        body.blocked.top = true;
                     }
                     if (body.right > this.bounds.x + this.bounds.width) {
                         body.x = this.bounds.x + this.bounds.width - body.width;
                         body.vx = -body.vx * this.worldBoundsRestitution;
+                        body.blocked.right = true;
                     }
                     if (body.bottom > this.bounds.y + this.bounds.height) {
                         body.y = this.bounds.y + this.bounds.height - body.height;
                         body.vy = -body.vy * this.worldBoundsRestitution;
+                        body.blocked.bottom = true;
                     }
                 }
             });
