@@ -52,7 +52,11 @@
 
                     world.addCollider({
                         a: player,
-                        b: crate
+                        b: crate,
+                        seperate: false,
+                        callback: () => {
+                            console.log('overlapping');
+                        }
                     });
 
                     let platform = this.add(new GameObject({x: 40, y: 192}));

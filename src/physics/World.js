@@ -41,12 +41,13 @@ class World {
     addCollider({
         a = undefined,
         b = undefined,
-        callback = undefined
+        callback = undefined,
+        seperate = true
     } = {}){
         if (!a || !b || !a.body || !b.body) {
             return;
         }
-        let collider = {a: a.body, b: b.body, callback: callback};
+        let collider = {a: a.body, b: b.body, callback: callback, seperate: seperate};
         this.colliders.push(collider);
         return collider;
     }
@@ -275,12 +276,14 @@ class World {
         this.colliders.forEach((collider) => {
             if (this.collideRect(collider.a, collider.b)) {
 
-                if (!collider.a.immovable && collider.b.immovable) {
-                    this.seperateAFromB(collider.a, collider.b);
-                } else if (collider.a.immovable && !collider.b.immovable) {
-                    this.seperateAFromB(collider.b, collider.a);
-                } else if (!collider.a.immovable && !collider.b.immovable) {
-                    this.seperateBoth(collider.a, collider.b);
+                if (collider.seperate) {
+                    if (!collider.a.immovable && collider.b.immovable) {
+                        this.seperateAFromB(collider.a, collider.b);
+                    } else if (collider.a.immovable && !collider.b.immovable) {
+                        this.seperateAFromB(collider.b, collider.a);
+                    } else if (!collider.a.immovable && !collider.b.immovable) {
+                        this.seperateBoth(collider.a, collider.b);
+                    }
                 }
                 if (collider.callback) {
                     collider.callback(collider.a, collider.b);
