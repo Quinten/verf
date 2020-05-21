@@ -15,7 +15,7 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World());
+                    let world = this.addWorld(new World({gravityY: 512}));
                     world.setBounds(0, 0, 320, 240);
                     world.worldBoundsRestitution = 0;
 
@@ -26,7 +26,7 @@
                     });
 
                     //let crate = this.add(new GameObject({x: 220, y: 96}));
-                    let crate = this.add(new GameObject({x: 160, y: 192}));
+                    let crate = this.add(new GameObject({x: 160, y: 160}));
                     crate.fillStyle = '#ff5e5b';
                     crate.width = 24;
                     crate.height = 24;
@@ -35,7 +35,7 @@
                     crate.body.collideWorldBounds = true;
                     crate.body.allowGravity = true;
 
-                    let player = this.add(new GameObject({x: 160, y: 160}));
+                    let player = this.add(new GameObject({x: 160, y: 192}));
                     player.fillStyle = '#639fab';
                     player.width = 24;
                     player.height = 24;
@@ -43,26 +43,23 @@
                     player.body.immovable = false;
                     player.body.collideWorldBounds = true;
                     player.body.allowGravity = true;
+                    player.body.frictionX = 1;
 
                     this.player = player;
 
                     this.keys.on('aup', () => {
-                        //crate.body.vy = 320;
+                        crate.body.vy = -320;
                     });
 
                     world.addCollider({
                         a: player,
-                        b: crate,
-                        seperate: false,
-                        callback: () => {
-                            console.log('overlapping');
-                        }
+                        b: crate
                     });
 
                     let platform = this.add(new GameObject({x: 40, y: 192}));
                     platform.fillStyle = '#fcfff7';
                     platform.width = 80;
-                    platform.height = 20;
+                    platform.height = 24;
                     platform.addBody(new Body());
                     platform.body.immovable = true;
                     platform.body.collideWorldBounds = true;
@@ -109,6 +106,7 @@
                         this.player.body.vx = 0;
                     }
 
+                    /*
                     if (this.keys.up) {
                         this.player.body.vy = -160;
                     } else if (this.keys.down){
@@ -116,6 +114,7 @@
                     } else {
                         this.player.body.vy = 0;
                     }
+                    */
                 }
             }
 

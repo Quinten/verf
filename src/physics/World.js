@@ -66,7 +66,7 @@ class World {
         return true;
     }
 
-    seperateAFromB(a, b)
+    seperateAFromB(a, b, delta)
     {
         // To find the side of entry calculate based on
         // the normalized sides
@@ -111,12 +111,16 @@ class World {
                     a.vx = 0;
                 }
 
+                a.x += b.vx * b.frictionX * delta;
+
             } else {
 
                 a.vy = -a.vy * b.restitution;
                 if (Math.abs(a.vy) < .0004) {
                     a.vy = 0;
                 }
+
+                a.y += b.vy * b.frictionY * delta;
             }
 
         // If a is approaching from the sides
@@ -131,6 +135,7 @@ class World {
             }
 
             a.vx = -a.vx * b.restitution;
+            a.x += b.vx * b.frictionX * delta;
 
             if (Math.abs(a.vx) < .0004) {
                 a.vx = 0;
@@ -149,6 +154,7 @@ class World {
             }
 
             a.vy = -a.vy * b.restitution;
+            a.y += b.vy * b.frictionY * delta;
 
             if (Math.abs(a.vy) < .0004) {
                 a.vy = 0;
@@ -156,7 +162,7 @@ class World {
         }
     }
 
-    seperateBoth(a, b)
+    seperateBoth(a, b, delta)
     {
         // To find the side of entry calculate based on
         // the normalized sides
@@ -209,8 +215,10 @@ class World {
 
                 if (this.gravityX > 0) {
                     b.vy = 0;
+                    b.y += a.vy * a.frictionY * delta;
                 } else if (this.gravityX < 0) {
                     a.vy = 0;
+                    a.y += b.vy * b.frictionY * delta;
                 }
             } else {
             // If a is approaching from the left
@@ -220,8 +228,10 @@ class World {
 
                 if (this.gravityX > 0) {
                     a.vy = 0;
+                    a.y += b.vy * b.frictionY * delta;
                 } else if (this.gravityX < 0) {
                     b.vy = 0;
+                    b.y += a.vy * a.frictionY * delta;
                 }
             }
 
@@ -236,8 +246,10 @@ class World {
 
                 if (this.gravityY > 0) {
                     b.vy = 0;
+                    b.x += a.vx * a.frictionX * delta;
                 } else if (this.gravityY < 0) {
                     a.vy = 0;
+                    a.x += b.vx * b.frictionX * delta;
                 }
 
             } else {
@@ -248,8 +260,10 @@ class World {
 
                 if (this.gravityY > 0) {
                     a.vy = 0;
+                    a.x += b.vx * b.frictionX * delta;
                 } else if (this.gravityY < 0) {
                     b.vy = 0;
+                    b.x += a.vx * a.frictionX * delta;
                 }
             }
         }
@@ -278,11 +292,11 @@ class World {
 
                 if (collider.seperate) {
                     if (!collider.a.immovable && collider.b.immovable) {
-                        this.seperateAFromB(collider.a, collider.b);
+                        this.seperateAFromB(collider.a, collider.b, delta);
                     } else if (collider.a.immovable && !collider.b.immovable) {
-                        this.seperateAFromB(collider.b, collider.a);
+                        this.seperateAFromB(collider.b, collider.a, delta);
                     } else if (!collider.a.immovable && !collider.b.immovable) {
-                        this.seperateBoth(collider.a, collider.b);
+                        this.seperateBoth(collider.a, collider.b, delta);
                     }
                 }
                 if (collider.callback) {

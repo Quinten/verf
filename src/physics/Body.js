@@ -20,6 +20,9 @@ class Body {
         this.restitution = 0;
         // bounce of edges
         this.collideWorldBounds = false;
+        // friction
+        this.frictionX = 0;
+        this.frictionY = 0;
     }
 
     get width()
