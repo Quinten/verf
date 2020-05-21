@@ -197,15 +197,6 @@ class World {
                 b.y += overlap;
             }
 
-            // Randomly select a x/y direction to reflect velocity on
-            if (Math.random() < .5) {
-                a.vx = -a.vx * b.restitution;
-                b.vx = -b.vx * a.restitution;
-            } else {
-                a.vy = -a.vy * b.restitution;
-                b.vy = -b.vy * a.restitution;
-            }
-
         // If a is approaching from the sides
         } else if (absDX > absDY) {
 
@@ -214,15 +205,24 @@ class World {
                 let overlap = (b.right - a.left) / 2;
                 a.x += overlap;
                 b.x -= overlap;
+
+                if (this.gravityX > 0) {
+                    b.vy = 0;
+                } else if (this.gravityX < 0) {
+                    a.vy = 0;
+                }
             } else {
             // If a is approaching from the left
                 let overlap = (a.right - b.left) / 2;
                 a.x -= overlap;
                 b.x += overlap;
-            }
 
-            a.vx = -a.vx * b.restitution;
-            b.vx = -b.vx * a.restitution;
+                if (this.gravityX > 0) {
+                    a.vy = 0;
+                } else if (this.gravityX < 0) {
+                    b.vy = 0;
+                }
+            }
 
         // If this collision is coming from the top or bottom
         } else {
@@ -233,15 +233,24 @@ class World {
                 a.y += overlap;
                 b.y -= overlap;
 
+                if (this.gravityY > 0) {
+                    b.vy = 0;
+                } else if (this.gravityY < 0) {
+                    a.vy = 0;
+                }
+
             } else {
             // If a is approaching from the top
                 let overlap = (a.bottom - b.top) / 2;
                 a.y -= overlap;
                 b.y += overlap;
-            }
 
-            a.vy = -a.vy * b.restitution;
-            b.vy = -b.vy * a.restitution;
+                if (this.gravityY > 0) {
+                    a.vy = 0;
+                } else if (this.gravityY < 0) {
+                    b.vy = 0;
+                }
+            }
         }
     }
 
@@ -255,15 +264,12 @@ class World {
         this.bodies.forEach((body) => {
 
             if (body.allowGravity) {
-                body.vx += body.ax * delta + gx;
-                body.vy += body.ay * delta + gy;
-            } else {
-                body.vx += body.ax * delta;
-                body.vy += body.ay * delta;
+                body.vx += gx;
+                body.vy += gy;
             }
 
-            body.x  += body.vx * delta;
-            body.y  += body.vy * delta;
+            body.x += body.vx * delta;
+            body.y += body.vy * delta;
         });
 
         this.colliders.forEach((collider) => {

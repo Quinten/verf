@@ -15,7 +15,7 @@
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World({gravityY: 512}));
+                    let world = this.addWorld(new World());
                     world.setBounds(0, 0, 320, 240);
                     world.worldBoundsRestitution = 0;
 
@@ -25,7 +25,8 @@
                         this.restart();
                     });
 
-                    let crate = this.add(new GameObject({x: 220, y: 96}));
+                    //let crate = this.add(new GameObject({x: 220, y: 96}));
+                    let crate = this.add(new GameObject({x: 160, y: 192}));
                     crate.fillStyle = '#ff5e5b';
                     crate.width = 24;
                     crate.height = 24;
@@ -34,7 +35,7 @@
                     crate.body.collideWorldBounds = true;
                     crate.body.allowGravity = true;
 
-                    let player = this.add(new GameObject({x: 160, y: 192}));
+                    let player = this.add(new GameObject({x: 160, y: 160}));
                     player.fillStyle = '#639fab';
                     player.width = 24;
                     player.height = 24;
@@ -46,7 +47,7 @@
                     this.player = player;
 
                     this.keys.on('aup', () => {
-                        player.body.vy = -320;
+                        //crate.body.vy = 320;
                     });
 
                     world.addCollider({
@@ -102,6 +103,14 @@
                         this.player.body.vx = 160;
                     } else {
                         this.player.body.vx = 0;
+                    }
+
+                    if (this.keys.up) {
+                        this.player.body.vy = -160;
+                    } else if (this.keys.down){
+                        this.player.body.vy = 160;
+                    } else {
+                        this.player.body.vy = 0;
                     }
                 }
             }

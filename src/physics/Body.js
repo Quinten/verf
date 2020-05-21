@@ -11,9 +11,6 @@ class Body {
         // velocity
         this.vx = 0;
         this.vy = 0;
-        // accelaration
-        this.ax = 0;
-        this.ay = 0;
 
         // gravity
         this.allowGravity = false;
