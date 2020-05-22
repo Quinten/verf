@@ -77,16 +77,7 @@ class Sound {
                 return;
             }
             asset.chunkIndex = Math.floor(Math.random() * asset.chunks.length);
-            let end = asset.chunks[asset.chunkIndex].end;
-            let timeUpdateHandler = (e) => {
-                if (asset.currentTime > end) {
-                    asset.pause();
-                    asset.removeEventListener('timeupdate', timeUpdateHandler);
-                }
-            };
-            asset.addEventListener('timeupdate', timeUpdateHandler, false);
-            asset.play();
-            asset.currentTime = asset.chunks[asset.chunkIndex].start;
+            this.playChunk(asset);
         }
     }
 
@@ -108,16 +99,7 @@ class Sound {
             if (asset.chunkIndex >= asset.chunks.length) {
                 asset.chunkIndex = 0;
             }
-            let end = asset.chunks[asset.chunkIndex].end;
-            let timeUpdateHandler = (e) => {
-                if (asset.currentTime > end) {
-                    asset.pause();
-                    asset.removeEventListener('timeupdate', timeUpdateHandler);
-                }
-            };
-            asset.addEventListener('timeupdate', timeUpdateHandler, false);
-            asset.play();
-            asset.currentTime = asset.chunks[asset.chunkIndex].start;
+            this.playChunk(asset);
         }
     }
 
@@ -139,17 +121,24 @@ class Sound {
             if (asset.chunkIndex < 0) {
                 asset.chunkIndex = asset.chunks.length - 1;
             }
-            let end = asset.chunks[asset.chunkIndex].end;
-            let timeUpdateHandler = (e) => {
-                if (asset.currentTime > end) {
-                    asset.pause();
-                    asset.removeEventListener('timeupdate', timeUpdateHandler);
-                }
-            };
-            asset.addEventListener('timeupdate', timeUpdateHandler, false);
-            asset.play();
-            asset.currentTime = asset.chunks[asset.chunkIndex].start;
+            this.playChunk(asset);
         }
+    }
+
+    playChunk(asset)
+    {
+        let end = asset.chunks[asset.chunkIndex].end;
+        let start = asset.chunks[asset.chunkIndex].start;
+        asset = asset.cloneNode();
+        let timeUpdateHandler = (e) => {
+            if (asset.currentTime > end) {
+                asset.pause();
+                asset.removeEventListener('timeupdate', timeUpdateHandler);
+            }
+        };
+        asset.addEventListener('timeupdate', timeUpdateHandler, false);
+        asset.play();
+        asset.currentTime = start;
     }
 }
 
