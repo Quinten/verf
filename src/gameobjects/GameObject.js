@@ -11,7 +11,7 @@ class GameObject {
         this.scrollFactorY = 1;
         this.width = 32;
         this.height = 32;
-        this.fillStyle = '#00FF00';
+        this.fillStyle = '#000000';
         this.scene = undefined;
         this.visible = true;
         this.body = undefined;

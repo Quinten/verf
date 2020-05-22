@@ -10,12 +10,32 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame} from '../index.js';
+            import {VerfGame, Scene, GameObject} from '../index.js';
+
+            class TestScene extends Scene
+            {
+                init()
+                {
+                    let square = this.add(new GameObject({
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2,
+                    }));
+                    square.fillStyle = this.engine.foreground;
+                }
+            }
+
             const config = {
                 zoom: ((window.devicePixelRatio) ? (1 / window.devicePixelRatio) : 1),
-                pixelArt: false
+                pixelArt: false,
+                background: '#ff5e5b',
+                foreground: '#fcfff7',
+                scenes: [
+                    {name: 'testscene', class: TestScene}
+                ]
             };
+
             const game = new VerfGame(config);
+
         </script>
     </body>
 </html>

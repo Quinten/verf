@@ -10,8 +10,24 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame} from '../index.js';
-            const game = new VerfGame();
+            import {VerfGame, Scene, GameObject} from '../index.js';
+
+            class TestScene extends Scene
+            {
+                init()
+                {
+                    this.add(new GameObject({
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2,
+                    }));
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [
+                    {name: 'testscene', class: TestScene}
+                ]
+            });
         </script>
     </body>
 </html>
