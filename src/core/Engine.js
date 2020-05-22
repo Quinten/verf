@@ -3,10 +3,21 @@ import Preloader from './Preloader.js';
 
 class Engine {
 
-    constructor (scenes, canvas, background, foreground, startAssets)
+    constructor (scenes, canvas, background, foreground, startAssets, plugins)
     {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
+
+        this.plugins = [];
+        plugins.forEach((plugin) => {
+            if (plugin.type == 'global') {
+                let newPlugin = new plugin.class(plugin.options);
+                newPlugin.name = plugin.name;
+                newPlugin.engine = this;
+                this.plugins.push(newPlugin);
+            }
+        });
+
         this.scenes = [];
         scenes.forEach((scene) => {
             let newScene = new scene.class();
@@ -15,6 +26,9 @@ class Engine {
                 newScene.options = scene.options;
             }
             newScene.engine = this;
+            this.plugins.forEach((plugin) => {
+                newScene[plugin.name] = plugin;
+            });
             this.scenes.push(newScene);
         });
         this.time = 0;

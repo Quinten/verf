@@ -24,7 +24,7 @@ http.createServer(function (request, response) {
         '.jpg': 'image/jpg',
         '.gif': 'image/gif',
         '.wav': 'audio/wav',
-        '.mp3': 'audio/mpeg',
+        '.mp3': 'audio/mp3',
         '.mp4': 'video/mp4',
         '.woff': 'application/font-woff',
         '.ttf': 'application/font-ttf',
@@ -46,7 +46,11 @@ http.createServer(function (request, response) {
                 response.end();
             }
         } else {
-            response.writeHead(200, { 'Content-Type': contentType });
+            if (extname == '.mp3') {
+                response.writeHead(200, { 'Content-Type': contentType, 'Accept-Ranges': 'bytes', 'Content-Length': content.length });
+            } else {
+                response.writeHead(200, { 'Content-Type': contentType });
+            }
             response.end(content, 'utf-8');
         }
     });

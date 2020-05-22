@@ -18,3 +18,5 @@ export {default as Keys} from './src/controls/Keys.js';
 
 export {default as World} from './src/physics/World.js';
 export {default as Body} from './src/physics/Body.js';
+
+export {default as Sound} from './src/sound/Sound.js';

@@ -12,7 +12,8 @@ class VerfGame {
         scenes = [],
         background = 'transparent',
         foreground = '#000000',
-        assets = undefined
+        assets = undefined,
+        plugins = []
     } = {})
     {
         this.parent = document.querySelector(parent);
@@ -23,7 +24,7 @@ class VerfGame {
         this.canvas.style.display = 'block';
         this.parent.appendChild(this.canvas);
 
-        this.engine = new Engine(scenes, this.canvas, background, foreground, assets);
+        this.engine = new Engine(scenes, this.canvas, background, foreground, assets, plugins);
 
         this.zoom = zoom;
         if (resizable) {

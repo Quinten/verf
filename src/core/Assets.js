@@ -26,11 +26,8 @@ class Assets {
                 case 'image':
                     this.loadImage(asset);
                     break;
-                case 'sfx':
-                    // TODO
-                    break;
-                case 'ambient':
-                    // TODO
+                case 'audio':
+                    this.loadAudio(asset);
                     break;
             }
         });
@@ -48,6 +45,22 @@ class Assets {
             }
         };
         img.src = asset.src;
+    }
+
+    loadAudio(asset) {
+        let audio = new Audio(asset.src);
+        audio.addEventListener('loadeddata', (e) => {
+            if (asset.chunks) {
+                audio.chunks = asset.chunks;
+                audio.chunkIndex = -1;
+            }
+            this.cache[asset.name] = audio;
+            this.queueLength--;
+            this.progress = 1 - (this.queueLength / this.queueMax);
+            if (this.queueLength === 0) {
+                this.events.emit('queuedone');
+            }
+        });
     }
 
     getByName(name)
