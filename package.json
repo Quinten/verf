@@ -1,6 +1,6 @@
 {
   "name": "verf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "a humble html5 canvas game framework",
   "main": "index.js",
   "repository": {
