@@ -6,6 +6,10 @@ class Controls extends Events {
     {
     }
 
+    update()
+    {
+    }
+
     destroy()
     {
         this.off();

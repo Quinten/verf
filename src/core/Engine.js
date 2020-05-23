@@ -55,6 +55,11 @@ class Engine {
                 window.focus();
             }, false);
         });
+
+        this.gamepads = {
+            free: [],
+            occupied: []
+        };
     }
 
     start() {
@@ -88,6 +93,9 @@ class Engine {
         }
         this.scenes.forEach((scene) => {
             if (scene.active) {
+                scene.controls.forEach((control) => {
+                    control.update();
+                });
                 scene.update(time, delta);
             }
         });

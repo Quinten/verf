@@ -19,11 +19,13 @@
                     world.setBounds(0, 0, 320, 240);
                     world.worldBoundsRestitution = 0;
 
-                    this.keys = this.addControls(new Keys());
+                    this.keys = this.addControls(new Keys({wasd: false}));
                     // press r or y to restart
                     this.keys.on('yup', () => {
                         this.restart();
                     });
+
+                    this.keysTwo = this.addControls(new Keys({cursors: false}));
 
                     let crate = this.add(new GameObject({x: 160, y: 192}));
                     crate.fillStyle = '#ff5e5b';
@@ -33,6 +35,10 @@
                     crate.body.immovable = false;
                     crate.body.collideWorldBounds = true;
                     crate.body.allowGravity = true;
+                    crate.body.frictionX = 1;
+                    crate.jumpTimer = 0;
+
+                    this.crate = crate;
 
                     let player = this.add(new GameObject({x: 160, y: 160}));
                     player.fillStyle = '#639fab';
@@ -43,14 +49,9 @@
                     player.body.collideWorldBounds = true;
                     player.body.allowGravity = true;
                     player.body.frictionX = 1;
+                    player.jumpTimer = 0;
 
                     this.player = player;
-
-                    this.keys.on('aup', () => {
-                        if (crate.body.blocked.bottom || crate.body.touching.bottom) {
-                            crate.body.vy = -320;
-                        }
-                    });
 
                     world.addCollider({
                         a: player,
@@ -94,22 +95,30 @@
                 update(time, delta)
                 {
                     if (this.keys.left) {
-                        this.player.body.vx = -160;
+                        this.crate.body.vx = -160;
                     } else if (this.keys.right){
+                        this.crate.body.vx = 160;
+                    } else {
+                        this.crate.body.vx = 0;
+                    }
+
+                    if (this.keys.a && this.crate.jumpTimer < time && (this.crate.body.blocked.bottom || this.crate.body.touching.bottom)) {
+                        this.crate.body.vy = -320;
+                        this.crate.jumpTimer = time + 250;
+                    }
+
+                    if (this.keysTwo.left) {
+                        this.player.body.vx = -160;
+                    } else if (this.keysTwo.right){
                         this.player.body.vx = 160;
                     } else {
                         this.player.body.vx = 0;
                     }
 
-                    /*
-                    if (this.keys.up) {
-                        this.player.body.vy = -160;
-                    } else if (this.keys.down){
-                        this.player.body.vy = 160;
-                    } else {
-                        this.player.body.vy = 0;
+                    if (this.keysTwo.x && this.player.jumpTimer < time && (this.player.body.blocked.bottom || this.player.body.touching.bottom)) {
+                        this.player.body.vy = -320;
+                        this.player.jumpTimer = time + 250;
                     }
-                    */
                 }
             }
 
