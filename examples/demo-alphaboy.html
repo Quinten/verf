@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Alphaboy</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, GameObject, Sprite, Keys, World, Body} from '../index.js';
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    let world = this.addWorld(new World({gravityY: 512}));
+                    world.setBounds(0, 0, 540, 540);
+                    world.worldBoundsRestitution = 0;
+
+                    this.camera.setBounds(0, 0, 540, 540);
+
+                    this.keys = this.addControls(new Keys());
+                    // press r or y to restart
+                    this.keys.on('yup', () => {
+                        this.restart();
+                    });
+
+                    let alphaboy = this.add(new Sprite({
+                        name: 'alphaboy',
+                        x: 60,
+                        y: 480,
+                        frame: 0,
+                        width: 32,
+                        height: 32
+                    }));
+                    alphaboy.fillStyle = '#639fab';
+                    alphaboy.addBody(new Body());
+                    alphaboy.body.width = 8;
+                    alphaboy.body.height = 16;
+                    alphaboy.offsetY = -6;
+                    alphaboy.body.immovable = false;
+                    alphaboy.body.collideWorldBounds = true;
+                    alphaboy.body.allowGravity = true;
+                    alphaboy.body.frictionX = 1;
+                    alphaboy.jumpTimer = 0;
+                    alphaboy.facing = 'right';
+
+                    alphaboy.addAnimation({
+                        name: 'idle-right',
+                        frames: [0],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    alphaboy.addAnimation({
+                        name: 'idle-left',
+                        frames: [5],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    alphaboy.addAnimation({
+                        name: 'run-right',
+                        frames: [1, 2, 3],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    alphaboy.addAnimation({
+                        name: 'run-left',
+                        frames: [6, 7, 8],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    alphaboy.addAnimation({
+                        name: 'jump-right',
+                        frames: [4],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    alphaboy.addAnimation({
+                        name: 'jump-left',
+                        frames: [9],
+                        fps: 12,
+                        loop: -1
+                    });
+
+                    this.alphaboy = alphaboy;
+
+                    this.camera.followTarget = alphaboy;
+
+                    for (let p = 0; p < 12; p++) {
+                        let platform = this.add(new GameObject({x: p * 45, y: p * 45}));
+                        platform.fillStyle = '#fcfff7';
+                        platform.width = 80;
+                        platform.height = 24;
+                        platform.addBody(new Body());
+
+                        world.addCollider({
+                            a: alphaboy,
+                            b: platform
+                        });
+                    }
+
+                }
+
+                update(time, delta)
+                {
+                    let ani = 'run';
+                    if (this.keys.left) {
+                        this.alphaboy.body.vx = -160;
+                        this.alphaboy.facing = 'left';
+                    } else if (this.keys.right){
+                        this.alphaboy.body.vx = 160;
+                        this.alphaboy.facing = 'right';
+                    } else {
+                        this.alphaboy.body.vx = 0;
+                        ani = 'idle';
+                    }
+
+                    if (this.keys.a && this.alphaboy.jumpTimer < time && (this.alphaboy.body.blocked.bottom || this.alphaboy.body.touching.bottom)) {
+                        this.alphaboy.body.vy = -320;
+                        this.alphaboy.jumpTimer = time + 250;
+                    }
+
+                    if (!(this.alphaboy.body.blocked.bottom || this.alphaboy.body.touching.bottom)) {
+                        ani = 'jump';
+                    }
+
+                    this.alphaboy.animation = ani + '-' + this.alphaboy.facing;
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [{name: 'testscene', class: TestScene}],
+                assets: [
+                    {name: 'alphaboy', type: 'image', src: 'assets/alphaboy.png'}
+                ],
+                width: 180,
+                height: 180,
+                resizable: true,
+                zoom: 'auto',
+                background: '#495867',
+                foreground: '#fcfff7'
+            });
+        </script>
+    </body>
+</html>
