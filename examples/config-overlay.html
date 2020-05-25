@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Config default</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, GameObject} from '../index.js';
+
+            class TestScene extends Scene
+            {
+                init()
+                {
+                    this.add(new GameObject({
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2,
+                    }));
+                }
+            }
+
+            const game = new VerfGame({
+                overlay: true,
+                scenes: [
+                    {name: 'testscene', class: TestScene}
+                ]
+            });
+        </script>
+    </body>
+</html>

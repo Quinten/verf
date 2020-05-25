@@ -9,6 +9,7 @@ class VerfGame {
         resizable = true,
         zoom = 'auto',
         pixelArt = true,
+        overlay = false,
         scenes = [],
         background = 'transparent',
         foreground = '#000000',
@@ -20,6 +21,12 @@ class VerfGame {
         this.canvas = document.createElement('canvas');
         if (pixelArt) {
             this.canvas.style.imageRendering = 'pixelated';
+        }
+        if (overlay) {
+            this.canvas.style.position = 'fixed';
+            this.canvas.style.top = 0;
+            this.canvas.style.left = 0;
+            this.canvas.style.zIndex = 2147483647;
         }
         this.canvas.style.display = 'block';
         this.parent.appendChild(this.canvas);
