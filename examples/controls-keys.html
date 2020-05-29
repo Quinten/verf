@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Verf | Test</title>
+        <title>Verf | Controls Keys + Gamepad</title>
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,8 +24,10 @@
 
                 draw(context)
                 {
+                    // draw a red background when the key is down, otherwise a blue one
                     context.fillStyle = (this.highlight) ? '#ff5e5b' : '#639fab';
                     context.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+
                     this.fillStyle = this.scene.engine.background;
                     super.draw(context);
                 }
@@ -36,6 +38,8 @@
                 {
                     // add graphics
                     this.graphics = {
+
+                        // letters of the keyboard
                         q: this.add(new Graphic({x: -176, y: 16, text: 'Q'})),
                         w: this.add(new Graphic({x: -144, y: 16, text: 'W'})),
                         r: this.add(new Graphic({x: -80, y: 16, text: 'R'})),
@@ -47,11 +51,17 @@
                         x: this.add(new Graphic({x: -112, y: 80, text: 'X'})),
                         c: this.add(new Graphic({x: -80, y: 80, text: 'C'})),
                         b: this.add(new Graphic({x: -16, y: 80, text: 'B'})),
+
+                        // space bar
                         space: this.add(new Graphic({x: -16, y: 112, text: 'SPACE'})),
+
+                        // cursors
                         cLeft: this.add(new Graphic({x: 112, y: 112, text: '<'})),
                         cDown: this.add(new Graphic({x: 144, y: 112, text: 'v'})),
                         cRight: this.add(new Graphic({x: 176, y: 112, text: '>'})),
                         cUp: this.add(new Graphic({x: 144, y: 80, text: '^'})),
+
+                        // gamepad
                         gLeft: this.add(new Graphic({x: -112, y: -80, text: '<'})),
                         gDown: this.add(new Graphic({x: -80, y: -48, text: 'v'})),
                         gRight: this.add(new Graphic({x: -48, y: -80, text: '>'})),
@@ -62,12 +72,14 @@
                         gY: this.add(new Graphic({x: 80, y: -112, text: 'Y'}))
                     };
 
+                    // make the spacebar bigger
                     this.graphics.space.width = 158;
 
                     // center camera on origin of the scene
                     this.camera.x = 0;
                     this.camera.y = 0;
 
+                    // add keyboard and gamepad controls to the scene
                     this.keys = this.addControls(new Keys());
                 }
 
@@ -75,14 +87,33 @@
                 {
                     let _ = this.graphics;
 
+                    // The Keys object has 8 properties/flags (type boolean)
+                    // which you can check in the gameloop
+                    // up, left, down, right
+                    // a, b, x, y
+
+                    // A flag can be set by more than one key.
+                    // This is to support qwerty, azerty, qwertz and qzerty,
+                    // without those users having to bend their fingers in weird ways,
+                    // when you decide to use WASD controls.
+                    // WASD also maps to the cursors as extra fallback.
+
+                    // This example changes the background of each key that trigger the same flag
+                    // so you can see the mapping.
+                    // It also shows which keys map to which gamepadbutton.
+
                     _.cUp.highlight = _.gUp.highlight = _.w.highlight = _.z.highlight = this.keys.up;
                     _.cLeft.highlight = _.gLeft.highlight = _.a.highlight = _.q.highlight = this.keys.left;
                     _.cDown.highlight = _.gDown.highlight = _.s.highlight = this.keys.down;
                     _.cRight.highlight = _.gRight.highlight = _.d.highlight = this.keys.right;
+
                     _.space.highlight = _.gA.highlight = this.keys.a;
                     _.b.highlight = _.c.highlight = _.gB.highlight = this.keys.b;
                     _.x.highlight = _.gX.highlight = this.keys.x;
                     _.y.highlight = _.r.highlight = _.gY.highlight = this.keys.y;
+
+                    // the keys object also fires some usefull keyup events
+                    // see the Keys class
                 }
             }
 
