@@ -51,6 +51,11 @@
                             this.add(new Particle({x: e.worldX, y: e.worldY})).addBody(new Body());
                         }
                     });
+
+                    // add some to begin with
+                    for (let p = 0; p < 20; p++) {
+                        this.add(new Particle({x: this.viewport.width / 2, y: this.viewport.height / 2})).addBody(new Body());
+                    }
                 }
 
                 update(time, delta)
