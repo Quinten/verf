@@ -1,7 +1,7 @@
 {
   "name": "verf",
   "version": "0.1.5",
-  "description": "a humble html5 canvas game framework",
+  "description": "a modular and extendible html5 canvas game framework",
   "main": "index.js",
   "repository": {
     "type": "git",
