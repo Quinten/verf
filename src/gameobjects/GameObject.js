@@ -17,6 +17,7 @@ class GameObject {
         this.body = undefined;
         this.offsetX = 0;
         this.offsetY = 0;
+        this.lifespan = undefined;
     }
 
     addBody(body)

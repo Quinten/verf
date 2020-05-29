@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Verf | Test</title>
+        <title>Verf | GameObjects Lifespan</title>
         <meta name="description" content="">
         <meta name="author" content="Quinten Clause">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +24,8 @@
 
                     // each frame the delta is subtracted from the lifespan by the engine
                     // when the lifespan is lower then zero the gameobject is removed
+                    // lifespan = how long the object remains on the scene in millieseconds
+                    // default is undefined, which never removes it
 
                     this.lifespan = 1500 + Math.random() * 1500;
                 }

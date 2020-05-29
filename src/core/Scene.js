@@ -73,8 +73,20 @@ class Scene {
         if (this.world) {
             this.world.step(delta);
         }
+
+        let toRemove = [];
+
         let offset = this.camera.getOffset(time, delta);
+
         this.children.forEach((child) => {
+
+            if (child.lifespan !== undefined) {
+                child.lifespan -= delta;
+                if (child.lifespan < 0) {
+                    toRemove.push(child);
+                    return;
+                }
+            }
 
             if (child.body) {
                 child.x = child.body.midX + child.offsetX;
@@ -102,6 +114,11 @@ class Scene {
             // all okay render child
             child.render(context, offset);
         });
+
+        toRemove.forEach((child) => {
+            this.remove(child);
+        });
+
         this.camera.postRender(context, time, delta);
     }
 
