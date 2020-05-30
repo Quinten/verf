@@ -12,6 +12,7 @@ export {default as SimpleBar} from './src/gameobjects/SimpleBar.js';
 export {default as FlatImage} from './src/gameobjects/FlatImage.js';
 export {default as Sprite} from './src/gameobjects/Sprite.js';
 export {default as PlainText} from './src/gameobjects/PlainText.js';
+export {default as PaintCanvas} from './src/gameobjects/PaintCanvas.js';
 
 export {default as Controls} from './src/controls/Controls.js';
 export {default as Pointer} from './src/controls/Pointer.js';

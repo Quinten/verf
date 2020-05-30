@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Game objects PaintCanvas</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, GameObject, PaintCanvas} from '../index.js';
+
+            class Square extends GameObject {
+
+                render(context, offset)
+                {
+                    // ignore the context argument
+                    // and use a PaintCanvas game object context instead
+                    super.render(this.scene.paintCanvas.context, offset);
+                }
+
+                draw (context)
+                {
+                    context.fillStyle = this.scene.engine.background;
+                    context.fillRect(-this.width/2, -this.height/2, this.width, this.height);
+                    context.strokeStyle = this.scene.engine.foreground;
+                    context.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+                }
+            }
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    this.paintCanvas = this.add(new PaintCanvas({
+                        x: 0,
+                        y: 0,
+                        width: this.viewport.width,
+                        height: this.viewport.height
+                    }));
+
+                    this.square = this.add(new Square());
+                }
+
+                update(time, delta)
+                {
+                    this.square.x = this.viewport.width / 2 + Math.cos(time / 654) * this.viewport.width / 3;
+                    this.square.y = this.viewport.height / 2 + Math.sin(time / 456) * this.viewport.height / 3;
+                }
+
+                resize(w, h)
+                {
+                    this.camera.x = w / 2;
+                    this.camera.y = h / 2;
+                    this.paintCanvas.setBounds(0, 0, w, h);
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [
+                    {name: 'testscene', class: TestScene}
+                ],
+                width: 320,
+                height: 320,
+                background: '#fcfff7',
+                foreground: '#639fab'
+            });
+        </script>
+    </body>
+</html>
