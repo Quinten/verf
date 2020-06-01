@@ -12,6 +12,7 @@ export {default as SimpleBar} from './src/gameobjects/SimpleBar.js';
 export {default as FlatImage} from './src/gameobjects/FlatImage.js';
 export {default as Sprite} from './src/gameobjects/Sprite.js';
 export {default as PlainText} from './src/gameobjects/PlainText.js';
+export {default as BitmapText} from './src/gameobjects/BitmapText.js';
 export {default as PaintCanvas} from './src/gameobjects/PaintCanvas.js';
 
 export {default as Controls} from './src/controls/Controls.js';
@@ -22,3 +23,6 @@ export {default as World} from './src/physics/World.js';
 export {default as Body} from './src/physics/Body.js';
 
 export {default as Sound} from './src/sound/Sound.js';
+
+export {default as BitmapFontMetrics} from './src/config/BitmapFontMetrics.js';
+

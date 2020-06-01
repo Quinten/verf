@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Verf | Game objects BitmapText</title>
+        <meta name="description" content="">
+        <meta name="author" content="Quinten Clause">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../styles.css" />
+    </head>
+    <body>
+        <script type="module">
+            import {VerfGame, Scene, PlainText, BitmapText} from '../index.js';
+
+            class TestScene extends Scene {
+                init ()
+                {
+                    let textA = this.add(new BitmapText({
+                        text: 'This is textA\n!!!\ncenter',
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2 - 48,
+                        font: 'napie-eight-font'
+                    }));
+
+                    let textB = this.add(new BitmapText({
+                        text: 'This is textB.\nIt is aligned left.\nAnd has a fill.',
+                        font: 'napie-eight-font',
+                        textAlign: 'left',
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2
+                    }));
+                    textB.fillStyle = '#639fab';
+
+                    let textC = this.add(new BitmapText({
+                        text: 'This is BitmapTextC\naligned right',
+                        font: 'napie-eight-font',
+                        textAlign: 'right',
+                        x: this.viewport.width / 2,
+                        y: this.viewport.height / 2 + 48
+                    }));
+                }
+            }
+
+            const game = new VerfGame({
+                scenes: [{name: 'testscene', class: TestScene}],
+                assets: [
+                    {name: 'napie-eight-font', type: 'image', src: 'assets/napie-eight-font.png'}
+                ],
+                background: '#495867'
+            });
+        </script>
+    </body>
+</html>
