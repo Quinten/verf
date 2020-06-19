@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Verf Documentation: Source: core/Assets.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/Assets.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Events from './Events.js';
+
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+/**
+ * Manages loading and caching of assets (images and audio)
+ *
+ * @fires module:core~Assets#queuedone
+ * @extends module:core~Events
+ * @memberof module:core~
+ */
+class Assets extends Events {
+
+    constructor ()
+    {
+        super();
+        /**
+         * A dictionary containing all loaded assets.
+         *
+         * @type {object}
+         */
+        this.cache = {};
+        /**
+         * A dictionary containing all audio blobs.
+         *
+         * @type {object}
+         */
+        this.blobs = {};
+        /**
+         * A dictionary containing all audio buffers.
+         *
+         * @type {object}
+         */
+        this.audioBuffers = {};
+        /**
+         * Current number if items waiting to come back from the network.
+         *
+         * @type {number}
+         */
+        this.queueLength = 0;
+        /**
+         * Number between 0 and 1, indicating the progrees of the queue. 1 is complete.
+         * .
+         * @type {number}
+         */
+        this.progress = 0;
+        /**
+         * How many items there where when the queue started.
+         * .
+         * @type {number}
+         */
+        this.queueMax = 0;
+
+        if (AudioContext) {
+            /**
+             * Native AudioContext for encoding loaded audio to audiobuffers. If this is undefined, HTML5 Audio is being used as a fallback.
+             * .
+             * @type {AudioContext}
+             */
+            this.audioCtx = new AudioContext();
+        }
+    }
+
+    /**
+     * Starts the loading of assets.
+     *
+     * @param {object[]} assets - An array of predefined assets.
+     * @param {string} assets[].name - A unique name to store it in the [cache]{@link module:core~Assets#cache}. You can also use the name to reference this asset in your code.
+     * @param {string} assets[].type - 'image' or 'audio'
+     * @param {string} assets[].src - The path where the file can be loaded over the network. Can also be a data-uri.
+     * @param {object[]} [assets[].chunks] - An array for the parts of an audio sprite.
+     * @param {number} assets[].chunks[].start - Start time of the sound bite in seconds.
+     * @param {number} assets[].chunks[].end - End time of the sound bite in seconds.
+     */
+    load(assets)
+    {
+        if (!assets.length) {
+            return;
+        }
+        this.progress = 0;
+        assets.forEach((asset) => {
+            if (this.cache[asset.name]) {
+                return;
+            }
+            this.queueLength++;
+            switch (asset.type) {
+                case 'image':
+                    this.loadImage(asset);
+                    break;
+                case 'audio':
+                    this.loadAudio(asset);
+                    break;
+            }
+        });
+        this.queueMax = this.queueLength;
+    }
+
+    loadImage(asset) {
+        let img = new Image();
+        img.onload = (e) => {
+            this.cache[asset.name] = img;
+            this.updateProgress();
+        };
+        img.src = asset.src;
+    }
+
+    loadAudio(asset) {
+        if (this.audioCtx) {
+            fetch(asset.src).then((response) => {
+                return response.arrayBuffer();
+            }).then((arrayBuffer) => {
+                this.audioCtx.decodeAudioData(arrayBuffer, (audioBuffer) => {
+                    if (asset.chunks) {
+                        audioBuffer.chunks = asset.chunks;
+                        audioBuffer.chunkIndex = -1;
+                    }
+                    this.audioBuffers[asset.name] = audioBuffer;
+                    this.updateProgress();
+                });
+            });
+        } else {
+            fetch(asset.src).then((response) => {
+                return response.blob();
+            }).then((blob) => {
+                let fileBlob = URL.createObjectURL(blob);
+                let audio = new Audio(fileBlob);
+                if (asset.chunks) {
+                    audio.chunks = asset.chunks;
+                    audio.chunkIndex = -1;
+                }
+                this.cache[asset.name] = audio;
+                this.blobs[asset.name] = fileBlob;
+                this.updateProgress();
+            });
+        }
+    }
+
+    updateProgress()
+    {
+        this.queueLength--;
+        this.progress = 1 - (this.queueLength / this.queueMax);
+        if (this.queueLength === 0) {
+            /**
+             * Fired when all assets in the queue are loaded.
+             *
+             * @event module:core~Assets#queuedone
+             */
+            this.emit('queuedone');
+        }
+    }
+
+    /**
+     * Get cache item by name.
+     *
+     * @param {string} - The name you gave the asset.
+     * @returns {Image|Audio|undefined}
+     */
+    getByName(name)
+    {
+        if (this.cache[name]) {
+            return this.cache[name];
+        }
+        return undefined;
+    }
+
+    /**
+     * Get blob cache item by name.
+     *
+     * @param {string} - The name you gave the asset.
+     * @returns {DOMString|undefined}
+     */
+    getBlobByName(name)
+    {
+        if (this.blobs[name]) {
+            return this.blobs[name];
+        }
+        return undefined;
+    }
+
+    /**
+     * Get audiobuffer cache item by name.
+     *
+     * @param {string} - The name you gave the asset.
+     * @returns {AudioBuffer|undefined}
+     */
+    getAudioBufferByName(name)
+    {
+        if (this.audioBuffers[name]) {
+            return this.audioBuffers[name];
+        }
+        return undefined;
+    }
+}
+export default Assets;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+
+    <nav>
+        <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controls.html">controls</a></li><li><a href="module-core.html">core</a></li><li><a href="module-gameobjects.html">gameobjects</a></li><li><a href="module-physics.html">physics</a></li><li><a href="module-sound.html">sound</a></li></ul><h3>Classes</h3><ul><li><a href="module-controls-Keys.html">Keys</a></li><li><a href="module-controls-Pointer.html">Pointer</a></li><li><a href="module-core-Assets.html">Assets</a></li><li><a href="module-core-Camera.html">Camera</a></li><li><a href="module-core-Engine.html">Engine</a></li><li><a href="module-core-Events.html">Events</a></li><li><a href="module-core-Preloader.html">Preloader</a></li><li><a href="module-core-Scene.html">Scene</a></li><li><a href="module-core-ScenePlugin.html">ScenePlugin</a></li><li><a href="module-core-VerfGame.html">VerfGame</a></li><li><a href="module-gameobjects-BitmapFontMetrics.html">BitmapFontMetrics</a></li><li><a href="module-gameobjects-BitmapText.html">BitmapText</a></li><li><a href="module-gameobjects-FlatImage.html">FlatImage</a></li><li><a href="module-gameobjects-GameObject.html">GameObject</a></li><li><a href="module-gameobjects-PaintCanvas.html">PaintCanvas</a></li><li><a href="module-gameobjects-PlainText.html">PlainText</a></li><li><a href="module-gameobjects-SimpleBar.html">SimpleBar</a></li><li><a href="module-gameobjects-Sprite.html">Sprite</a></li><li><a href="module-physics-Body.html">Body</a></li><li><a href="module-physics-World.html">World</a></li><li><a href="module-sound-Sound.html">Sound</a></li></ul><h3>Events</h3><ul><li><a href="module-controls-Keys.html#event:keydown">keydown</a></li><li><a href="module-controls-Keys.html#event:keyup">keyup</a></li><li><a href="module-controls-Pointer.html#event:pointerdown">pointerdown</a></li><li><a href="module-controls-Pointer.html#event:pointermove">pointermove</a></li><li><a href="module-controls-Pointer.html#event:pointerup">pointerup</a></li><li><a href="module-core-Assets.html#event:queuedone">queuedone</a></li><li><a href="module-core-Camera.html#event:fadecomplete">fadecomplete</a></li><li><a href="module-core-Camera.html#event:flashcomplete">flashcomplete</a></li><li><a href="module-core-Preloader.html#event:addedchild">addedchild</a></li><li><a href="module-core-Preloader.html#event:removedchild">removedchild</a></li><li><a href="module-core-Scene.html#event:addedchild">addedchild</a></li><li><a href="module-core-Scene.html#event:removedchild">removedchild</a></li><li><a href="module-gameobjects-Sprite.html#event:animationstopped">animationstopped</a></li></ul>
+    </nav>
+</div>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

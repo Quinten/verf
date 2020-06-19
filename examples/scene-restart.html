@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../index.js';
+            import {VerfGame, Scene, GameObject} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
@@ -21,9 +21,9 @@
                     square.width = 100;
                     square.height = 100;
 
-                    this.camera.events.once('flashcomplete', () => {
+                    this.camera.once('flashcomplete', () => {
                         this.engine.setTimeout(() => {
-                            this.camera.events.once('fadecomplete', () => {
+                            this.camera.once('fadecomplete', () => {
 
                                 this.restart();
 

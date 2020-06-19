@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
@@ -22,7 +22,7 @@
                     this.square.height = 100;
                     this.add(this.square);
 
-                    document.querySelector('canvas').addEventListener('click', () => {
+                    this.pointer.on('pointerdown', () => {
                         this.camera.shake();
                         //this.camera.shake({ duration: 2000, intensity: .35 }); // optional parameters
                     });
@@ -31,6 +31,7 @@
 
             const game = new VerfGame({
                 scenes: [{class: TestScene}],
+                plugins: [{name: 'pointer', type: 'scene', class: Pointer}],
                 width: 640,
                 height: 480,
                 zoom: 1,

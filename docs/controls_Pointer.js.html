@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Verf Documentation: Source: controls/Pointer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div id="main">
+
+        <h1 class="page-title">Source: controls/Pointer.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import ScenePlugin from '../core/ScenePlugin.js';
+
+/**
+ * Unified mouse and touch input.
+ *
+ * @extends module:core~ScenePlugin
+ * @memberof module:controls~
+ * @fires module:controls~Pointer#pointerdown
+ * @fires module:controls~Pointer#pointermove
+ * @fires module:controls~Pointer#pointerup
+ */
+class Pointer extends ScenePlugin {
+
+    /**
+     * Adds the necessary touch and mouse event listeners.
+     */
+    init()
+    {
+        let canvas = this.scene.engine.canvas;
+
+        this.mouseDownHandler = this.onMouseDown.bind(this);
+        canvas.addEventListener('mousedown', this.mouseDownHandler);
+
+        this.touchStartHandler = this.onTouchStart.bind(this);
+        canvas.addEventListener('touchstart', this.touchStartHandler);
+
+        this.mouseMoveHandler = this.onMouseMove.bind(this);
+        canvas.addEventListener('mousemove', this.mouseMoveHandler);
+
+        this.touchMoveHandler = this.onTouchMove.bind(this);
+        canvas.addEventListener('touchmove', this.touchMoveHandler);
+
+        this.mouseUpHandler = this.onMouseUp.bind(this);
+        canvas.addEventListener('mouseup', this.mouseUpHandler);
+
+        this.touchEndHandler = this.onTouchEnd.bind(this);
+        canvas.addEventListener('touchend', this.touchEndHandler);
+
+        /**
+         * Wether or not the pointer is currently down.
+         *
+         * @type {boolean}
+         */
+        this.isDown = false;
+    }
+
+    /**
+     * Called internally when a the mouse goes down.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onMouseDown(e)
+    {
+        this.isDown = true;
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        let name = 'pointerdown';
+        this.emitPointerEvent({name, clientX, clientY});
+    }
+
+    /**
+     * Called internally when a the finger goes down.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onTouchStart(e)
+    {
+        this.isDown = true;
+        e.preventDefault();
+        let clientX = e.changedTouches[0].clientX;
+        let clientY = e.changedTouches[0].clientY;
+        let name = 'pointerdown';
+        this.emitPointerEvent({name, clientX, clientY});
+    }
+
+    /**
+     * Called internally when a the mouse moves.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onMouseMove(e)
+    {
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        let name = 'pointermove';
+        this.emitPointerEvent({name, clientX, clientY});
+    }
+
+    /**
+     * Called internally when a the finger moves.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onTouchMove(e)
+    {
+        e.preventDefault();
+        let clientX = e.changedTouches[0].clientX;
+        let clientY = e.changedTouches[0].clientY;
+        let name = 'pointermove';
+        this.emitPointerEvent({name, clientX, clientY});
+    }
+
+    /**
+     * Called internally when the mouse goes up.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onMouseUp(e)
+    {
+        this.isDown = false;
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        this.emitPointerEvent({clientX, clientY});
+    }
+
+    /**
+     * Called internally when the finger goes up.
+     *
+     * @param {object} e - The native javascript event object.
+     */
+    onTouchEnd(e)
+    {
+        this.isDown = false;
+        e.preventDefault();
+        let clientX = e.changedTouches[0].clientX;
+        let clientY = e.changedTouches[0].clientY;
+        this.emitPointerEvent({clientX, clientY});
+    }
+
+    /**
+     * Calculates the events positions within the game, based on the native mouse or touch position and then emits the event.
+     *
+     * @param {object} e - An object containing the name of the event to emit and position data of the native event.
+     * @param {object} e.name - The name of the event to emit.
+     * @param {number} e.clientX - The native events x position relative to the browser window.
+     * @param {number} e.clientY - The native events y position relative to the browser window.
+     *
+     */
+    emitPointerEvent({name = 'pointerup', clientX = 0, clientY = 0} = {})
+    {
+        let rect = this.scene.engine.canvas.getBoundingClientRect();
+        let x = (clientX - rect.left);
+        let y = (clientY - rect.top);
+        let viewportX = x / this.scene.viewport.zoom;
+        let viewportY = y / this.scene.viewport.zoom;
+        let worldX = viewportX + this.scene.offset.x;
+        let worldY = viewportY + this.scene.offset.y;
+        /**
+         * Pointer down event.
+         *
+         * @event module:controls~Pointer#pointerdown
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
+        /**
+         * Pointer move event. On mobile this event only fires when the pointer is down.
+         * This is not the case on desktop. But you can check for the [isDown]{@link module:controls~Pointer#isDown} property
+         *
+         * @event module:controls~Pointer#pointermove
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
+        /**
+         * Pointer up event.
+         *
+         * @event module:controls~Pointer#pointerup
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
+        this.emit(name, {viewportX, viewportY, worldX, worldY});
+    }
+
+    /**
+     * Removes all mouse and touch event listeners.
+     */
+    shutdown()
+    {
+        super.shutdown();
+
+        let canvas = this.scene.engine.canvas;
+        canvas.removeEventListener('mousedown', this.mouseDownHandler);
+        canvas.removeEventListener('touchstart', this.touchStartHandler);
+        canvas.removeEventListener('mousemove', this.mouseMoveHandler);
+        canvas.removeEventListener('touchmove', this.touchMoveHandler);
+        canvas.removeEventListener('mouseup', this.mouseUpHandler);
+        canvas.removeEventListener('touchend', this.touchEndHandler);
+
+        this.isDown = false;
+    }
+}
+export default Pointer;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+
+    <nav>
+        <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controls.html">controls</a></li><li><a href="module-core.html">core</a></li><li><a href="module-gameobjects.html">gameobjects</a></li><li><a href="module-physics.html">physics</a></li><li><a href="module-sound.html">sound</a></li></ul><h3>Classes</h3><ul><li><a href="module-controls-Keys.html">Keys</a></li><li><a href="module-controls-Pointer.html">Pointer</a></li><li><a href="module-core-Assets.html">Assets</a></li><li><a href="module-core-Camera.html">Camera</a></li><li><a href="module-core-Engine.html">Engine</a></li><li><a href="module-core-Events.html">Events</a></li><li><a href="module-core-Preloader.html">Preloader</a></li><li><a href="module-core-Scene.html">Scene</a></li><li><a href="module-core-ScenePlugin.html">ScenePlugin</a></li><li><a href="module-core-VerfGame.html">VerfGame</a></li><li><a href="module-gameobjects-BitmapFontMetrics.html">BitmapFontMetrics</a></li><li><a href="module-gameobjects-BitmapText.html">BitmapText</a></li><li><a href="module-gameobjects-FlatImage.html">FlatImage</a></li><li><a href="module-gameobjects-GameObject.html">GameObject</a></li><li><a href="module-gameobjects-PaintCanvas.html">PaintCanvas</a></li><li><a href="module-gameobjects-PlainText.html">PlainText</a></li><li><a href="module-gameobjects-SimpleBar.html">SimpleBar</a></li><li><a href="module-gameobjects-Sprite.html">Sprite</a></li><li><a href="module-physics-Body.html">Body</a></li><li><a href="module-physics-World.html">World</a></li><li><a href="module-sound-Sound.html">Sound</a></li></ul><h3>Events</h3><ul><li><a href="module-controls-Keys.html#event:keydown">keydown</a></li><li><a href="module-controls-Keys.html#event:keyup">keyup</a></li><li><a href="module-controls-Pointer.html#event:pointerdown">pointerdown</a></li><li><a href="module-controls-Pointer.html#event:pointermove">pointermove</a></li><li><a href="module-controls-Pointer.html#event:pointerup">pointerup</a></li><li><a href="module-core-Assets.html#event:queuedone">queuedone</a></li><li><a href="module-core-Camera.html#event:fadecomplete">fadecomplete</a></li><li><a href="module-core-Camera.html#event:flashcomplete">flashcomplete</a></li><li><a href="module-core-Preloader.html#event:addedchild">addedchild</a></li><li><a href="module-core-Preloader.html#event:removedchild">removedchild</a></li><li><a href="module-core-Scene.html#event:addedchild">addedchild</a></li><li><a href="module-core-Scene.html#event:removedchild">removedchild</a></li><li><a href="module-gameobjects-Sprite.html#event:animationstopped">animationstopped</a></li></ul>
+    </nav>
+</div>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

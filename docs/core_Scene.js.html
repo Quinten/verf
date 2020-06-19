@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Verf Documentation: Source: core/Scene.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/Scene.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Events from './Events.js';
+
+/**
+ * Base Class for scenes that holds game objects and renders them.
+ *
+ * @extends module:core~Events
+ * @memberof module:core~
+ * @fires module:core~Scene#addedchild
+ * @fires module:core~Scene#removedchild
+ */
+class Scene extends Events {
+
+    constructor ()
+    {
+        super();
+
+        /**
+         * Wether or not this scene is the active scene and it is being rendered. Best not to set directly. Use [engine.switchScene]{@link module:core~Engine#switchScene} instead.
+         * @type {boolean}
+         * @default false
+         */
+        this.active = false;
+
+        /**
+         * Information about the actual size of the viewport and canvas.
+         * @type {object}
+         * @property {number} width - The actual width of the viewport or canvas. Not the one set in the game config.
+         * @property {number} height - The actual height of the viewport or canvas. Not the one set in the game config.
+         * @property {number} zoom - The actual zoom. Not the one set in the game config.
+         */
+        this.viewport = {width: 320, height: 180, zoom: 1};
+
+        /**
+         * An array that holds the scene plugins.
+         * @type {module:core~ScenePlugin[]}
+         */
+        this.plugins = [];
+
+        this.offset = {x: 0, y: 0};
+    }
+
+    /**
+     * Internal function for starting the scene again. Use `init` to do your own setup.
+     */
+    setup()
+    {
+        this.plugins.forEach((plugin) => {
+            plugin.init();
+        });
+
+        /**
+         * The children that are added to the scene. Children will be rendered on top of each other. So a child with a lower index will be behind children with a higher index.
+         * @type {module:gameobjects~GameObject[]}
+         */
+        this.children = [];
+
+        this.init();
+        this.active = true;
+    }
+
+    /**
+     * Adds a child to this scene.
+     * @param {module:gameobjects~GameObject} - The GameObject instance to be added.
+     * @returns {module:gameobjects~GameObject} - Returns the child again.
+     */
+    add(child)
+    {
+        child.scene = this;
+        this.children.push(child);
+        /**
+         * Notifies when a child is added to this scene. Passes the child that was added.
+         *
+         * @event module:core~Scene#addedchild
+         * @type {module:gameobjects~GameObject}
+         */
+        this.emit('addedchild', child);
+        return child;
+    }
+
+    /**
+     * Removes a child from this scene. If the child has a body, the body will be removed from the world.
+     * @param {module:gameobjects~GameObject} - The GameObject to be removed.
+     */
+    remove(child)
+    {
+        /**
+         * Notifies when a child is removed from this scene. Passes the child that was removed.
+         *
+         * @event module:core~Scene#removedchild
+         * @type {module:gameobjects~GameObject}
+         */
+        this.emit('removedchild', child);
+        child.scene = undefined;
+        this.children.splice(this.children.indexOf(child), 1);
+    }
+
+    /**
+     * Automatically called when the scene starts again. Can be used in your own Scene classes to setup the scene. No need to call `super.init()`.
+     * @abstract
+     */
+    init ()
+    {
+    }
+
+    /**
+     * Automatically called every frame. Can be used in your own Scene classes to do game logic. No need to call `super.update()`.
+     * @abstract
+     * @param {number} time - The total time (in milliesconds) since the start of the game.
+     * @param {number} delta - The time elapsed (in milliseconds) since the last frame.
+     */
+    update (time, delta)
+    {
+    }
+
+    /**
+     * Automatically called when the browser resizes. Can be used in your own Scene classes to resposition stuff. No need to call `super.resize()`.
+     * @abstract
+     * @param {number} w - The new width of the game canvas.
+     * @param {number} h - The new height of the game canvas.
+     */
+    resize(w, h)
+    {
+    }
+
+    /**
+     * Internal function. Automatically called every frame. Can be overriden, but it is best to call `super.render(context, time, delta)`. Using `update` is the preferred way to go to game logic.
+     * @param {CanvasRenderingContext2D} context - The canvas render context.
+     * @param {number} time - The total time (in milliesconds) since the start of the game.
+     * @param {number} delta - The time elapsed (in milliseconds) since the last frame.
+     */
+    render (context, time, delta)
+    {
+        let toRemove = [];
+
+        this.children.forEach((child) => {
+
+            if (child.lifespan !== undefined) {
+                child.lifespan -= delta;
+                if (child.lifespan &lt; 0) {
+                    toRemove.push(child);
+                    return;
+                }
+            }
+
+            if (child.body) {
+                child.x = child.body.midX + child.offsetX;
+                child.y = child.body.midY + child.offsetY;
+            }
+
+            // cull child
+            // check if child is in viewport first
+            // left
+            if (child.x - child.width / 2 + child.width &lt; this.offset.x * child.scrollFactorX) {
+                return;
+            }
+            // right
+            if (child.x - child.width / 2 > this.offset.x * child.scrollFactorX + this.viewport.width) {
+                return;
+            }
+            // top
+            if (child.y - child.height / 2 + child.height &lt; this.offset.y * child.scrollFactorY) {
+                return;
+            }
+            // bottom
+            if (child.y - child.height / 2 > this.offset.y * child.scrollFactorY + this.viewport.height) {
+                return;
+            }
+            // all okay render child
+            child.render(context, this.offset);
+        });
+
+        toRemove.forEach((child) => {
+            this.remove(child);
+        });
+    }
+
+    /**
+     * Simply restart this scene.
+     */
+    restart()
+    {
+        this.shutdown();
+        this.setup();
+    }
+
+    /**
+     * Internal function for stopping the scene and removing everything. Can be overridden, but you must call `super.shutdown()` or it can lead to pretty bad erros and memory leaks.
+     */
+    shutdown()
+    {
+        this.children.forEach((child) => {
+            child.destroy();
+            child.scene = undefined;
+        });
+        this.children = [];
+
+        this.plugins.forEach((plugin) => {
+            plugin.shutdown();
+        });
+
+        this.active = false;
+        this.off();
+    }
+}
+export default Scene;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+
+    <nav>
+        <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controls.html">controls</a></li><li><a href="module-core.html">core</a></li><li><a href="module-gameobjects.html">gameobjects</a></li><li><a href="module-physics.html">physics</a></li><li><a href="module-sound.html">sound</a></li></ul><h3>Classes</h3><ul><li><a href="module-controls-Keys.html">Keys</a></li><li><a href="module-controls-Pointer.html">Pointer</a></li><li><a href="module-core-Assets.html">Assets</a></li><li><a href="module-core-Camera.html">Camera</a></li><li><a href="module-core-Engine.html">Engine</a></li><li><a href="module-core-Events.html">Events</a></li><li><a href="module-core-Preloader.html">Preloader</a></li><li><a href="module-core-Scene.html">Scene</a></li><li><a href="module-core-ScenePlugin.html">ScenePlugin</a></li><li><a href="module-core-VerfGame.html">VerfGame</a></li><li><a href="module-gameobjects-BitmapFontMetrics.html">BitmapFontMetrics</a></li><li><a href="module-gameobjects-BitmapText.html">BitmapText</a></li><li><a href="module-gameobjects-FlatImage.html">FlatImage</a></li><li><a href="module-gameobjects-GameObject.html">GameObject</a></li><li><a href="module-gameobjects-PaintCanvas.html">PaintCanvas</a></li><li><a href="module-gameobjects-PlainText.html">PlainText</a></li><li><a href="module-gameobjects-SimpleBar.html">SimpleBar</a></li><li><a href="module-gameobjects-Sprite.html">Sprite</a></li><li><a href="module-physics-Body.html">Body</a></li><li><a href="module-physics-World.html">World</a></li><li><a href="module-sound-Sound.html">Sound</a></li></ul><h3>Events</h3><ul><li><a href="module-controls-Keys.html#event:keydown">keydown</a></li><li><a href="module-controls-Keys.html#event:keyup">keyup</a></li><li><a href="module-controls-Pointer.html#event:pointerdown">pointerdown</a></li><li><a href="module-controls-Pointer.html#event:pointermove">pointermove</a></li><li><a href="module-controls-Pointer.html#event:pointerup">pointerup</a></li><li><a href="module-core-Assets.html#event:queuedone">queuedone</a></li><li><a href="module-core-Camera.html#event:fadecomplete">fadecomplete</a></li><li><a href="module-core-Camera.html#event:flashcomplete">flashcomplete</a></li><li><a href="module-core-Preloader.html#event:addedchild">addedchild</a></li><li><a href="module-core-Preloader.html#event:removedchild">removedchild</a></li><li><a href="module-core-Scene.html#event:addedchild">addedchild</a></li><li><a href="module-core-Scene.html#event:removedchild">removedchild</a></li><li><a href="module-gameobjects-Sprite.html#event:animationstopped">animationstopped</a></li></ul>
+    </nav>
+</div>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

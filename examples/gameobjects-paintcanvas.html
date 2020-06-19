@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject, PaintCanvas} from '../index.js';
+            import {VerfGame, Scene, GameObject, PaintCanvas} from '../src/index.js';
 
             class Square extends GameObject {
 
@@ -53,7 +53,8 @@
                 {
                     this.camera.x = w / 2;
                     this.camera.y = h / 2;
-                    this.paintCanvas.setBounds(0, 0, w, h);
+                    this.paintCanvas.width = w;
+                    this.paintCanvas.height = h;
                 }
             }
 

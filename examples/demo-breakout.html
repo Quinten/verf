@@ -10,31 +10,23 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject, Pointer, World, Body} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer, World, Body} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World());
-                    world.setBounds(this.camera.x - this.viewport.width / 2, this.camera.y - this.viewport.height / 2, this.viewport.width, this.viewport.height);
+                    this.world.setBounds(this.camera.x - this.viewport.width / 2, this.camera.y - this.viewport.height / 2, this.viewport.width, this.viewport.height);
 
-                    let palette = this.add(new GameObject({x: this.viewport.width / 2, y: 32}));
+                    let palette = this.add(new GameObject({x: this.viewport.width / 2, y: 32, width: 48, height: 8}).addBody(new Body()));
                     palette.fillStyle = this.engine.foreground;
-                    palette.width = 48;
-                    palette.height = 8;
-                    palette.addBody(new Body());
                     palette.body.restitution = 1;
 
-                    let pointer = this.addControls(new Pointer());
-                    pointer.on('pointermove', (e) => {
+                    this.pointer.on('pointermove', (e) => {
                         palette.body.x = e.worldX - 24;
                     });
 
-                    let ball = this.add(new GameObject({x: this.viewport.width / 2, y: 256}));
+                    let ball = this.add(new GameObject({x: this.viewport.width / 2, y: 256, width: 8, height: 8}).addBody(new Body()));
                     ball.fillStyle = this.engine.foreground;
-                    ball.width = 8;
-                    ball.height = 8;
-                    ball.addBody(new Body());
                     ball.body.immovable = false;
                     ball.body.collideWorldBounds = true;
                     ball.body.vy = -200;
@@ -44,7 +36,7 @@
                     this.oldPaletteX = this.palette.x;
                     this.paletteV = this.palette.x - this.oldPaletteX;
 
-                    world.addCollider({
+                    this.world.addCollider({
                         a: ball,
                         b: palette,
                         callback: () => {
@@ -54,14 +46,11 @@
 
                     for (let y = -1; y <= 1; y++) {
                         for (let x = -2; x <= 2; x++) {
-                            let brick = this.add(new GameObject({x: this.viewport.width / 2 + x * 40, y: 360 + y * 16}));
+                            let brick = this.add(new GameObject({x: this.viewport.width / 2 + x * 40, y: 360 + y * 16, width: 32, height: 8}).addBody(new Body()));
                             brick.fillStyle = this.engine.foreground;
-                            brick.width = 32;
-                            brick.height = 8;
-                            brick.addBody(new Body());
                             brick.body.restitution = 1;
 
-                            world.addCollider({
+                            this.world.addCollider({
                                 a: ball,
                                 b: brick,
                                 callback: () => {
@@ -89,6 +78,10 @@
 
             const game = new VerfGame({
                 scenes: [{class: TestScene}],
+                plugins: [
+                    {name: 'pointer', type: 'scene', class: Pointer},
+                    {name: 'world', type: 'scene', class: World}
+                ],
                 width: 320,
                 height: 400,
                 background: '#639fab',

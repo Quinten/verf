@@ -1,5 +1,13 @@
+/**
+ * Global plugin for playing back audio from files.
+ * @memberof module:sound~
+ */
 class Sound {
 
+    /**
+     * @param options - An options object for this plugin. Passed via the game config.
+     * @param options.key - The key to use for localStorage. Used to store wether this plugin is muted or not.
+     */
     constructor ({
         key = 'verf-sound'
     } = {})
@@ -13,6 +21,12 @@ class Sound {
         this.tracks = {};
     }
 
+    /**
+     * Wether this sound plugin is active or on (not muted).
+     *
+     * @type {boolean}
+     * @default true
+     */
     get isOn() {
         return this._isOn;
     }
@@ -50,6 +64,11 @@ class Sound {
         return trackSource;
     }
 
+    /**
+     * Plays an audio file. Does nothing if it is already playing.
+     *
+     * @param {string} name - The asset name.
+     */
     play(name)
     {
         if (!this.isOn) {
@@ -72,6 +91,11 @@ class Sound {
         }
     }
 
+    /**
+     * Stops an audio file that is playing.
+     *
+     * @param {string} name - The asset name.
+     */
     stop(name)
     {
         if (this.tracks[name]) {
@@ -85,6 +109,11 @@ class Sound {
         }
     }
 
+    /**
+     * Plays an audio file and keeps looping it. Does nothing if the sound is already playing.
+     *
+     * @param {string} name - The asset name.
+     */
     loop(name)
     {
         if (!this.isOn) {
@@ -109,6 +138,11 @@ class Sound {
         }
     }
 
+    /**
+     * Plays a random chunk from the audio file. If no chunks are defined it will play the complete sound.
+     *
+     * @param {string} name - The asset name.
+     */
     playRandom(name)
     {
         if (!this.isOn) {
@@ -125,6 +159,11 @@ class Sound {
         }
     }
 
+    /**
+     * Plays the next chunk from the audio file. If your chunks are notes that go up, this will create a positive feeling.
+     *
+     * @param {string} name - The asset name.
+     */
     playUp(name)
     {
         if (!this.isOn) {
@@ -144,6 +183,11 @@ class Sound {
         }
     }
 
+    /**
+     * Plays the previous chunk from the audio file. If your chunks are notes that go up, this will create a negative vibe as the notes will sound like they are going down.
+     *
+     * @param {string} name - The asset name.
+     */
     playDown(name)
     {
         if (!this.isOn) {
@@ -163,6 +207,12 @@ class Sound {
         }
     }
 
+    /**
+     * Internal function that plays a chunk.
+     *
+     * @param {object} asset - The asset.
+     * @param {string} name - The asset name.
+     */
     playChunk(asset, name)
     {
         let end = asset.chunks[asset.chunkIndex].end;

@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject, Pointer} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
@@ -36,9 +36,7 @@
                     vertLine.scrollFactorX = 0;
                     vertLine.scrollFactorY = 0;
 
-                    let pointer = this.addControls(new Pointer());
-
-                    pointer.on('pointerdown', (e) => {
+                    this.pointer.on('pointerdown', (e) => {
 
                         vertLine.x = e.viewportX;
                         horLine.y = e.viewportY;
@@ -61,7 +59,7 @@
                         }
                     });
 
-                    pointer.on('pointerup', (e) => {
+                    this.pointer.on('pointerup', (e) => {
                         if (e.worldX < square.x - square.width / 2) {
                             return;
                         }
@@ -77,13 +75,13 @@
                         this.camera.shake();
                     });
 
-                    pointer.on('pointermove', (e) => {
+                    this.pointer.on('pointermove', (e) => {
 
                         // this check is optional...
                         // on mobile pointermove will not fire
                         // if there is no pointer down
                         // this way you can get the same behavior on desktop
-                        if (!pointer.isDown) {
+                        if (!this.pointer.isDown) {
                             return;
                         }
 
@@ -95,6 +93,7 @@
 
             const game = new VerfGame({
                 scenes: [{class: TestScene}],
+                plugins: [{name: 'pointer', type: 'scene', class: Pointer}],
                 width: 320,
                 height: 240,
                 background: '#75485e'

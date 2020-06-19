@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject, Pointer} from '../index.js';
+            import {VerfGame, Scene, GameObject, Pointer} from '../src/index.js';
 
             class SceneWithOptions extends Scene {
                 init ()
@@ -20,10 +20,8 @@
                     square.fillStyle = this.options.squareFill;
                     this.add(square);
 
-                    let pointer = this.addControls(new Pointer());
-
-                    pointer.once('pointerup', () => {
-                        this.camera.events.once('fadecomplete', () => {
+                    this.pointer.once('pointerup', () => {
+                        this.camera.once('fadecomplete', () => {
                             this.engine.switchScene(this.options.nextScene);
                         });
                         this.camera.fade({color: '#fcfff7'});
@@ -54,6 +52,7 @@
                         }
                     }
                 ],
+                plugins: [{name: 'pointer', type: 'scene', class: Pointer}],
                 background: '#75485e'
             });
         </script>

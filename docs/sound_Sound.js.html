@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Verf Documentation: Source: sound/Sound.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div id="main">
+
+        <h1 class="page-title">Source: sound/Sound.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Global plugin for playing back audio from files.
+ * @memberof module:sound~
+ */
+class Sound {
+
+    /**
+     * @param options - An options object for this plugin. Passed via the game config.
+     * @param options.key - The key to use for localStorage. Used to store wether this plugin is muted or not.
+     */
+    constructor ({
+        key = 'verf-sound'
+    } = {})
+    {
+        this.key = key;
+        this._isOn = true;
+        let savedSetting = localStorage.getItem(this.key);
+        if (savedSetting === 'off') {
+            this._isOn = false;
+        }
+        this.tracks = {};
+    }
+
+    /**
+     * Wether this sound plugin is active or on (not muted).
+     *
+     * @type {boolean}
+     * @default true
+     */
+    get isOn() {
+        return this._isOn;
+    }
+
+    set isOn(value) {
+        this._isOn = value;
+        localStorage.setItem(this.key, (value) ? 'on' : 'off');
+    }
+
+    createAndStartBufferSource({
+        audioBuffer = undefined,
+        start = 0,
+        duration = undefined,
+        name = '',
+        loop = false
+    }= {})
+    {
+        if (audioBuffer == undefined) {
+            return;
+        }
+        let audioCtx = this.engine.assets.audioCtx;
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        let trackSource = audioCtx.createBufferSource();
+        trackSource.buffer = audioBuffer;
+        trackSource.loop = loop;
+        trackSource.connect(audioCtx.destination);
+        trackSource.onended = () => {
+            if (this.tracks[name]) {
+                this.tracks[name] = undefined;
+            }
+        };
+        trackSource.start(0, start, duration);
+        return trackSource;
+    }
+
+    /**
+     * Plays an audio file. Does nothing if it is already playing.
+     *
+     * @param {string} name - The asset name.
+     */
+    play(name)
+    {
+        if (!this.isOn) {
+            return;
+        }
+        if (this.engine.assets.audioCtx) {
+            if (this.tracks[name]) {
+                return;
+            }
+            this.tracks[name] = this.createAndStartBufferSource({
+                audioBuffer: this.engine.assets.getAudioBufferByName(name),
+                name: name
+            });
+        } else {
+            let asset = this.engine.assets.getByName(name);
+            if (asset) {
+                asset.loop = false;
+                asset.play();
+            }
+        }
+    }
+
+    /**
+     * Stops an audio file that is playing.
+     *
+     * @param {string} name - The asset name.
+     */
+    stop(name)
+    {
+        if (this.tracks[name]) {
+            this.tracks[name].stop();
+            return;
+        }
+        let asset = this.engine.assets.getByName(name);
+        if (asset) {
+            asset.pause();
+            asset.currentTime = 0;
+        }
+    }
+
+    /**
+     * Plays an audio file and keeps looping it. Does nothing if the sound is already playing.
+     *
+     * @param {string} name - The asset name.
+     */
+    loop(name)
+    {
+        if (!this.isOn) {
+            return;
+        }
+        if (this.engine.assets.audioCtx) {
+            if (this.tracks[name]) {
+                this.tracks[name].loop = true;
+                return;
+            }
+            this.tracks[name] = this.createAndStartBufferSource({
+                audioBuffer: this.engine.assets.getAudioBufferByName(name),
+                name: name,
+                loop: true
+            });
+        } else {
+            let asset = this.engine.assets.getByName(name);
+            if (asset) {
+                asset.loop = true;
+                asset.play();
+            }
+        }
+    }
+
+    /**
+     * Plays a random chunk from the audio file. If no chunks are defined it will play the complete sound.
+     *
+     * @param {string} name - The asset name.
+     */
+    playRandom(name)
+    {
+        if (!this.isOn) {
+            return;
+        }
+        let asset = (this.engine.assets.audioCtx) ? this.engine.assets.getAudioBufferByName(name) : this.engine.assets.getByName(name);
+        if (asset) {
+            if (!asset.chunks) {
+                this.play(name);
+                return;
+            }
+            asset.chunkIndex = Math.floor(Math.random() * asset.chunks.length);
+            this.playChunk(asset, name);
+        }
+    }
+
+    /**
+     * Plays the next chunk from the audio file. If your chunks are notes that go up, this will create a positive feeling.
+     *
+     * @param {string} name - The asset name.
+     */
+    playUp(name)
+    {
+        if (!this.isOn) {
+            return;
+        }
+        let asset = (this.engine.assets.audioCtx) ? this.engine.assets.getAudioBufferByName(name) : this.engine.assets.getByName(name);
+        if (asset) {
+            if (!asset.chunks) {
+                this.play(name);
+                return;
+            }
+            asset.chunkIndex += 1;
+            if (asset.chunkIndex >= asset.chunks.length) {
+                asset.chunkIndex = 0;
+            }
+            this.playChunk(asset, name);
+        }
+    }
+
+    /**
+     * Plays the previous chunk from the audio file. If your chunks are notes that go up, this will create a negative vibe as the notes will sound like they are going down.
+     *
+     * @param {string} name - The asset name.
+     */
+    playDown(name)
+    {
+        if (!this.isOn) {
+            return;
+        }
+        let asset = (this.engine.assets.audioCtx) ? this.engine.assets.getAudioBufferByName(name) : this.engine.assets.getByName(name);
+        if (asset) {
+            if (!asset.chunks) {
+                this.play(name);
+                return;
+            }
+            asset.chunkIndex -= 1;
+            if (asset.chunkIndex &lt; 0) {
+                asset.chunkIndex = asset.chunks.length - 1;
+            }
+            this.playChunk(asset, name);
+        }
+    }
+
+    /**
+     * Internal function that plays a chunk.
+     *
+     * @param {object} asset - The asset.
+     * @param {string} name - The asset name.
+     */
+    playChunk(asset, name)
+    {
+        let end = asset.chunks[asset.chunkIndex].end;
+        let start = asset.chunks[asset.chunkIndex].start;
+        let duration = (end - start);
+
+        if (this.engine.assets.audioCtx) {
+            this.createAndStartBufferSource({
+                audioBuffer: asset,
+                name: name,
+                start: start,
+                duration: duration
+            });
+        } else {
+            let clone = new Audio(this.engine.assets.getBlobByName(name));
+            let playPromise = clone.play();
+            if (playPromise) {
+               playPromise.then(_ => {
+                   clone.currentTime = start;
+                   setTimeout(() => {
+                        clone.pause();
+                    }, duration * 1000);
+               });
+            } else {
+               clone.currentTime = start;
+               setTimeout(() => {
+                    clone.pause();
+                }, duration * 1000);
+            }
+        }
+    }
+}
+
+export default Sound;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+
+    <nav>
+        <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controls.html">controls</a></li><li><a href="module-core.html">core</a></li><li><a href="module-gameobjects.html">gameobjects</a></li><li><a href="module-physics.html">physics</a></li><li><a href="module-sound.html">sound</a></li></ul><h3>Classes</h3><ul><li><a href="module-controls-Keys.html">Keys</a></li><li><a href="module-controls-Pointer.html">Pointer</a></li><li><a href="module-core-Assets.html">Assets</a></li><li><a href="module-core-Camera.html">Camera</a></li><li><a href="module-core-Engine.html">Engine</a></li><li><a href="module-core-Events.html">Events</a></li><li><a href="module-core-Preloader.html">Preloader</a></li><li><a href="module-core-Scene.html">Scene</a></li><li><a href="module-core-ScenePlugin.html">ScenePlugin</a></li><li><a href="module-core-VerfGame.html">VerfGame</a></li><li><a href="module-gameobjects-BitmapFontMetrics.html">BitmapFontMetrics</a></li><li><a href="module-gameobjects-BitmapText.html">BitmapText</a></li><li><a href="module-gameobjects-FlatImage.html">FlatImage</a></li><li><a href="module-gameobjects-GameObject.html">GameObject</a></li><li><a href="module-gameobjects-PaintCanvas.html">PaintCanvas</a></li><li><a href="module-gameobjects-PlainText.html">PlainText</a></li><li><a href="module-gameobjects-SimpleBar.html">SimpleBar</a></li><li><a href="module-gameobjects-Sprite.html">Sprite</a></li><li><a href="module-physics-Body.html">Body</a></li><li><a href="module-physics-World.html">World</a></li><li><a href="module-sound-Sound.html">Sound</a></li></ul><h3>Events</h3><ul><li><a href="module-controls-Keys.html#event:keydown">keydown</a></li><li><a href="module-controls-Keys.html#event:keyup">keyup</a></li><li><a href="module-controls-Pointer.html#event:pointerdown">pointerdown</a></li><li><a href="module-controls-Pointer.html#event:pointermove">pointermove</a></li><li><a href="module-controls-Pointer.html#event:pointerup">pointerup</a></li><li><a href="module-core-Assets.html#event:queuedone">queuedone</a></li><li><a href="module-core-Camera.html#event:fadecomplete">fadecomplete</a></li><li><a href="module-core-Camera.html#event:flashcomplete">flashcomplete</a></li><li><a href="module-core-Preloader.html#event:addedchild">addedchild</a></li><li><a href="module-core-Preloader.html#event:removedchild">removedchild</a></li><li><a href="module-core-Scene.html#event:addedchild">addedchild</a></li><li><a href="module-core-Scene.html#event:removedchild">removedchild</a></li><li><a href="module-gameobjects-Sprite.html#event:animationstopped">animationstopped</a></li></ul>
+    </nav>
+</div>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

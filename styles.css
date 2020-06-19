@@ -1,14 +1,23 @@
+@import url('docs/styles/jsdoc-default.css');
+
+html {
+    background: #fcfff7;
+}
+
 body {
     background: #fcfff7;
     color: #495867;
-    font-family: monospace;
 }
 
-a:link {
+a {
     color: #639fab;
 }
 
 a:visited {
+    color: #639fab;
+}
+
+.examples a:visited {
     color: #83596e;
 }
 
@@ -19,4 +28,33 @@ a:hover {
 
 a:focus {
     color: #4f828d;
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+#main {
+    flex: 1 1 auto;
+    width: auto;
+}
+
+nav {
+    flex: 0 0 auto;
+    width: auto;
+    padding-right: 16px;
+}
+
+section {
+    background: #fcfff7;
+    margin-right: 0;
+}
+
+@media only screen and (min-width: 1280px) {
+
+    #main {
+        max-width: calc(100% - 180px);
+    }
 }

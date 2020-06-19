@@ -1,8 +1,24 @@
 import GameObject from './GameObject.js';
-import BitmapFontMetrics from '../config/BitmapFontMetrics.js';
+import BitmapFontMetrics from './BitmapFontMetrics.js';
 
+/**
+ * Renders text by copying parts of a bitmap (usually displaying a font or letters of some sort)
+ *
+ * @extends module:gameobjects~GameObject
+ * @memberof module:gameobjects~
+ */
 class BitmapText extends GameObject {
 
+    /**
+     * @param {object} config - A config object that sets some basic properties.
+     * @param {number} [config.x=0] - The game object's x position. See [textAlign]{@link module:gameobjects~BitmapText#textAlign}.
+     * @param {number} [config.y=0] - The game object's top y position.
+     * @param {string} config.text - The string to use.
+     * @param {string} config.font - The name of the image asset.
+     * @param {string} [config.textAlign=center] - The alignement of the text. 'left', 'right' or 'center'.
+     * @param {module:gameobjects~BitmapFontMetrics} [config.metrics] - A configuration object describing the positions of the characters.
+     * @param {string} [config.fillStyle=undefined] - A color to overlay on the opaque areas of the font. If undefined, no coloring is applied.
+     */
     constructor ({
         x = 0,
         y = 0,
@@ -29,6 +45,27 @@ class BitmapText extends GameObject {
         this.context = this.canvas.getContext('2d');
     }
 
+    /**
+     * The game object's x position. See [textAlign]{@link module:gameobjects~BitmapText#textAlign}.
+     *
+     * @name module:gameobjects~BitmapText#x
+     * @memberof module:gameobjects~BitmapText
+     * @type {number}
+     */
+
+    /**
+     * The game object's top y position.
+     *
+     * @name module:gameobjects~BitmapText#y
+     * @memberof module:gameobjects~BitmapText
+     * @type {number}
+     */
+
+    /**
+     * Draws the text to the screen.
+     *
+     * @param {CanvasRenderingContext2D} context - The translated canvas context.
+     */
     draw (context)
     {
         if (this.font == undefined) {
@@ -52,7 +89,7 @@ class BitmapText extends GameObject {
                 }
                 line.split('').forEach((char) => {
                     let pos = this.metrics.getCharData(char);
-                    let img = this.scene.engine.assets.getByName(this.font);
+                    let img = this.scene.assets.getByName(this.font);
                     if (img) {
                         let xDest = x * this.metrics.width + lineOffsetX;
                         let yDest = y * this.metrics.height;
@@ -82,6 +119,11 @@ class BitmapText extends GameObject {
         context.drawImage(this.canvas, offsetX, 0);
     }
 
+    /**
+     * The string that will be rendered.
+     *
+     * @type {string}
+     */
     get text()
     {
         return this._text;
@@ -94,6 +136,11 @@ class BitmapText extends GameObject {
         this.redraw = true;
     }
 
+    /**
+     * The alignement of the text. 'left', 'right' or 'center'. If the alignement is 'left', the text is drawn from the x onwards to the left. When the alignement is 'center', x will be in the middle. If the 'aligenment' is right, the text is drawn from x tot the right.
+     *
+     * @type {string}
+     */
     get textAlign()
     {
         return this._textAlign;
@@ -103,10 +150,6 @@ class BitmapText extends GameObject {
     {
         this._textAlign = textAlign;
         this.redraw = true;
-    }
-
-    destroy ()
-    {
     }
 }
 export default BitmapText;

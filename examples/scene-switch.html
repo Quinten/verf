@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../index.js';
+            import {VerfGame, Scene, GameObject} from '../src/index.js';
 
             class SceneOne extends Scene {
                 init ()
@@ -22,9 +22,9 @@
                     this.square.height = 100;
                     this.add(this.square);
 
-                    this.camera.events.once('flashcomplete', () => {
+                    this.camera.once('flashcomplete', () => {
                         this.engine.setTimeout(() => {
-                            this.camera.events.once('fadecomplete', () => {
+                            this.camera.once('fadecomplete', () => {
                                 this.engine.switchScene('scenetwo');
                             });
                             this.camera.fade({duration: 2000, color: '#639fab'});
@@ -44,9 +44,9 @@
                     this.square.height = 100;
                     this.add(this.square);
 
-                    this.camera.events.once('flashcomplete', () => {
+                    this.camera.once('flashcomplete', () => {
                         this.engine.setTimeout(() => {
-                            this.camera.events.once('fadecomplete', () => {
+                            this.camera.once('fadecomplete', () => {
                                 this.engine.switchScene('sceneone');
                             });
                             this.camera.fade({duration: 2000, color: '#639fab'});

@@ -10,21 +10,19 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject, Sprite, Keys, World, Body} from '../index.js';
+            import {VerfGame, Scene, GameObject, Sprite, Keys, World, Body} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
                 {
-                    let world = this.addWorld(new World({gravityY: 512}));
-                    world.setBounds(0, 0, 540, 540);
-                    world.worldBoundsRestitution = 0;
-
+                    this.world.setBounds(0, 0, 540, 540);
                     this.camera.setBounds(0, 0, 540, 540);
 
-                    this.keys = this.addControls(new Keys());
                     // press r or y to restart
-                    this.keys.on('yup', () => {
-                        this.restart();
+                    this.keys.on('keyup', (e) => {
+                        if (e.keyCode == 89 || e.keyCode == 82) {
+                            this.restart();
+                        }
                     });
 
                     let alphaboy = this.add(new Sprite({
@@ -34,9 +32,8 @@
                         frame: 0,
                         width: 32,
                         height: 32
-                    }));
+                    }).addBody(new Body()));
                     alphaboy.fillStyle = '#639fab';
-                    alphaboy.addBody(new Body());
                     alphaboy.body.width = 8;
                     alphaboy.body.height = 16;
                     alphaboy.offsetY = -6;
@@ -94,13 +91,10 @@
                     this.camera.followTarget = alphaboy;
 
                     for (let p = 0; p < 12; p++) {
-                        let platform = this.add(new GameObject({x: p * 45, y: p * 45}));
+                        let platform = this.add(new GameObject({x: p * 45, y: p * 45, width: 80, height: 24}).addBody(new Body()));
                         platform.fillStyle = '#fcfff7';
-                        platform.width = 80;
-                        platform.height = 24;
-                        platform.addBody(new Body());
 
-                        world.addCollider({
+                        this.world.addCollider({
                             a: alphaboy,
                             b: platform
                         });
@@ -137,6 +131,10 @@
 
             const game = new VerfGame({
                 scenes: [{name: 'testscene', class: TestScene}],
+                plugins: [
+                    {name: 'keys', type: 'scene', class: Keys},
+                    {name: 'world', type: 'scene', class: World, options: {gravityY: 512, worldBoundsRestitution: 0}}
+                ],
                 assets: [
                     {name: 'alphaboy', type: 'image', src: 'assets/alphaboy.png'}
                 ],

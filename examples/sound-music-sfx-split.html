@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, Sound, Pointer, PlainText, GameObject} from '../index.js';
+            import {VerfGame, Scene, Sound, Pointer, PlainText, GameObject} from '../src/index.js';
 
             class Button extends PlainText {
 
@@ -99,13 +99,11 @@
                         this.sfx.playDown('ping');
                     };
 
-                    let pointer = this.addControls(new Pointer());
-                    pointer.on('pointerup', (e) => {
+                    this.pointer.on('pointerup', (e) => {
                         this.children.forEach((child) => {
                             child.processPointer(e);
                         });
                     });
-
                 }
             }
 
@@ -118,7 +116,8 @@
                 plugins: [
                     // the key is for local storage, best to use a different one for each game on the same domain
                     {name: 'sfx', type: 'global', class: Sound, options: {key: 'verf-sfx'}},
-                    {name: 'music', type: 'global', class: Sound, options: {key: 'verf-music'}}
+                    {name: 'music', type: 'global', class: Sound, options: {key: 'verf-music'}},
+                    {name: 'pointer', type: 'scene', class: Pointer}
                 ],
                 assets: [
                     {name: 'eerie', type: 'audio', src: 'assets/eerie.mp3'},

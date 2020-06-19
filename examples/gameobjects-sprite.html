@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, Sprite} from '../index.js';
+            import {VerfGame, Scene, Sprite, Pointer} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
@@ -45,11 +45,11 @@
                     this.add(alphaboy);
 
                     // on click switch animation
-                    document.querySelector('canvas').addEventListener('click', () => {
+                    this.pointer.on('pointerup', () => {
                         alphaboy.animation = (alphaboy.animation == 'run-left') ? 'run-right' : 'run-left';
                     });
 
-                    alphaboy.events.on('animationstopped', () => {
+                    alphaboy.on('animationstopped', () => {
                         // when animation stops switch texture (name)
                         alphaboy.name = (alphaboy.name == 'alphaboy') ? 'hopboy' : 'alphaboy';
                         // start the animation again
@@ -68,6 +68,7 @@
                         class: TestScene
                     }
                 ],
+                plugins: [{name: 'pointer', type: 'scene', class: Pointer}],
                 assets: [
                     {name: 'alphaboy', type: 'image', src: 'assets/alphaboy.png'},
                     {name: 'hopboy', type: 'image', src: 'assets/hopboy.png'}

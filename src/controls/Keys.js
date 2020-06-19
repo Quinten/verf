@@ -1,4 +1,4 @@
-import Controls from './Controls.js';
+import ScenePlugin from '../core/ScenePlugin.js';
 
 const gamepadMapping = [
     'a', 'b', 'x', 'y',
@@ -7,8 +7,23 @@ const gamepadMapping = [
     'up', 'down', 'left', 'right'
 ];
 
-class Keys extends Controls {
 
+/**
+ * Unified keyboard and gamepad input for desktop games. Puts wasd, cursors and gamepad controls together in a single api.
+ * All you need is to check the following properties of this plugin in your scenes update function: up, down, left, right, a, b, x and y.
+ *
+ * @extends module:core~ScenePlugin
+ * @memberof module:controls~
+ * @fires module:controls~Keys#keyup
+ * @fires module:controls~Keys#keydown
+ */
+class Keys extends ScenePlugin {
+
+    /**
+     * @param {object} options - An options object. Can be passed down with the [game config]{@link module:core~VerfGame}.
+     * @param {boolean} [options.wasd=true] - Wether or not to support wasd keys.
+     * @param {boolean} [options.cursors=true] - Wether or not to support cursor or arrow keys.
+     */
     constructor({
         wasd = true,
         cursors = true
@@ -18,15 +33,50 @@ class Keys extends Controls {
         this.cursors = cursors;
     }
 
+    /**
+     * Adds the necessary keyboard and gamepad event listeners at the start of the scene.
+     */
     init()
     {
+        /**
+         * Wether the up cursor, W or Z key or dpad up is currently down.
+         * @type {boolean}
+         */
         this.up = false; // w + z
+        /**
+         * Wether the left cursor, A or Q key or dpad left is currently down.
+         * @type {boolean}
+         */
         this.left = false; // a + q
+        /**
+         * Wether the down cursor, S key or dpad down is currently down.
+         * @type {boolean}
+         */
         this.down = false; // s
+        /**
+         * Wether the right cursor, D key or dpad right is currently down.
+         * @type {boolean}
+         */
         this.right = false; // d
+        /**
+         * Wether the space bar or gamepad A button is currently down.
+         * @type {boolean}
+         */
         this.a = false; // space
+        /**
+         * Wether the C or B key or gamepad B button is currently down.
+         * @type {boolean}
+         */
         this.b = false; // c + b
+        /**
+         * Wether the X key or gamepad X button is currently down.
+         * @type {boolean}
+         */
         this.x = false; // x
+        /**
+         * Wether the Y or R key or gamepad Y button is currently down.
+         * @type {boolean}
+         */
         this.y = false; // r + y
 
         this.keyDownHandler = this.onKeyDown.bind(this);
@@ -49,6 +99,11 @@ class Keys extends Controls {
         }
     }
 
+    /**
+     * Called internally when a key goes down. Override this if you want to support more keys.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onKeyDown(e)
     {
         if (this.gamepad >= 0) {
@@ -104,27 +159,35 @@ class Keys extends Controls {
                 this.y = true;
                 break;
         }
+        /**
+         * Any key goes down. Passes the native KeyboardEvent.
+         *
+         * @event module:controls~Keys#keydown
+         * @type {KeyboardEvent}
+         */
+        this.emit('keydown', e);
     }
 
+    /**
+     * Called internally when a key goes up. Override this if you want to support more keys.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onKeyUp(e)
     {
         if (this.cursors) {
             switch (e.keyCode) {
                 case 38: // up
                     this.up = false;
-                    //this.emit('upup');
                     break;
                 case 37: // left
                     this.left = false;
-                    //this.emit('leftup');
                     break;
                 case 40: // down
                     this.down = false;
-                    //this.emit('downup');
                     break;
                 case 39: // right
                     this.right = false;
-                    //this.emit('rightup');
                     break;
             }
         }
@@ -133,52 +196,49 @@ class Keys extends Controls {
                 case 87: // w
                 case 90: // z
                     this.up = false;
-                    //this.emit('upup');
                     break;
                 case 65: // a
                 case 81: // q
                     this.left = false;
-                    //this.emit('leftup');
                     break;
                 case 83: // s
                     this.down = false;
-                    //this.emit('downup');
                     break;
                 case 68: // d
                     this.right = false;
-                    //this.emit('rightup');
                     break;
             }
         }
         switch (e.keyCode) {
             case 32: // space
                 this.a = false;
-                this.emit('aup');
                 break;
             case 67: // c
             case 66: // b
                 this.b = false;
-                this.emit('bup');
                 break;
             case 88: // x
                 this.x = false;
-                this.emit('xup');
                 break;
             case 89: // y
             case 82: // r
                 this.y = false;
-                this.emit('yup');
-                break;
-            case 77: // m
-                this.emit('mup');
-                break;
-            case 27: // esc
-                this.emit('escup');
                 break;
         }
-        this.emit('anyup');
+        /**
+         * Any key goes up. Passes the native KeyboardEvent.
+         *
+         * @event module:controls~Keys#keyup
+         * @type {KeyboardEvent}
+         */
+        this.emit('keyup', e);
     }
 
+    /**
+     * Called internally when a gamepad is connected.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onGamepadConnected(e)
     {
         if (this.gamepad >= 0) {
@@ -191,6 +251,11 @@ class Keys extends Controls {
         }
     }
 
+    /**
+     * Called internally when a gamepad is disconnected.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onGamepadDisconnected(e)
     {
         let gamepad = e.gamepad.index;
@@ -207,7 +272,13 @@ class Keys extends Controls {
         }
     }
 
-    update()
+    /**
+     * Called internally to update the gamepad mappings. Override this if you want to support more buttons of the gamepad.
+     *
+     * @param {number} time - The total time (in milliesconds) since the start of the game.
+     * @param {number} delta - The time elapsed (in milliseconds) since the last frame.
+     */
+    update(time, delta)
     {
         if (this.gamepad < 0) {
             return;
@@ -221,9 +292,12 @@ class Keys extends Controls {
         });
     }
 
-    destroy()
+    /**
+     * Removes all the keyboard and gamepad event listeners when the scene shuts down.
+     */
+    shutdown()
     {
-        super.destroy();
+        super.shutdown();
 
         window.removeEventListener('keydown', this.keyDownHandler);
         window.removeEventListener('keyup', this.keyUpHandler);

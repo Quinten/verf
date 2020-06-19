@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, PlainText, Keys} from '../index.js';
+            import {VerfGame, Scene, PlainText, Keys} from '../src/index.js';
 
             class Graphic extends PlainText {
 
@@ -78,9 +78,6 @@
                     // center camera on origin of the scene
                     this.camera.x = 0;
                     this.camera.y = 0;
-
-                    // add keyboard and gamepad controls to the scene
-                    this.keys = this.addControls(new Keys());
                 }
 
                 update(time, delta)
@@ -119,6 +116,7 @@
 
             const game = new VerfGame({
                 scenes: [{name: 'testscene', class: TestScene}],
+                plugins: [{name: 'keys', type: 'scene', class: Keys}],
                 zoom: 1,
                 pixelArt: false,
                 background: '#495867'

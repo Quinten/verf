@@ -10,7 +10,7 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../index.js';
+            import {VerfGame, Scene, GameObject} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
@@ -23,9 +23,9 @@
                     this.add(this.square);
 
                     document.querySelector('canvas').addEventListener('click', () => {
-                        this.camera.events.once('fadecomplete', () => {
+                        this.camera.once('fadecomplete', () => {
                             console.log('fadecomplete');
-                            this.camera.events.once('flashcomplete', () => {
+                            this.camera.once('flashcomplete', () => {
                                 console.log('flashcomplete');
                             });
                             this.camera.flash({duration: 2000, color: '#ff5e5b'});

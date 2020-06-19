@@ -10,13 +10,13 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, FlatImage} from '../index.js';
+            import {VerfGame, Scene, FlatImage} from '../src/index.js';
 
             class TestScene extends Scene {
                 init ()
                 {
-                    this.engine.startAssets.forEach((asset) => {
-                        this.add(new FlatImage({name: asset.name, x: this.viewport.width / 2, y: this.viewport.height / 2}));
+                    Object.keys(this.assets.cache).forEach((assetName) => {
+                        this.add(new FlatImage({name: assetName, x: this.viewport.width / 2, y: this.viewport.height / 2}));
                     });
                 }
             }

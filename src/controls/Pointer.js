@@ -1,7 +1,19 @@
-import Controls from './Controls.js';
+import ScenePlugin from '../core/ScenePlugin.js';
 
-class Pointer extends Controls {
+/**
+ * Unified mouse and touch input.
+ *
+ * @extends module:core~ScenePlugin
+ * @memberof module:controls~
+ * @fires module:controls~Pointer#pointerdown
+ * @fires module:controls~Pointer#pointermove
+ * @fires module:controls~Pointer#pointerup
+ */
+class Pointer extends ScenePlugin {
 
+    /**
+     * Adds the necessary touch and mouse event listeners.
+     */
     init()
     {
         let canvas = this.scene.engine.canvas;
@@ -24,9 +36,19 @@ class Pointer extends Controls {
         this.touchEndHandler = this.onTouchEnd.bind(this);
         canvas.addEventListener('touchend', this.touchEndHandler);
 
+        /**
+         * Wether or not the pointer is currently down.
+         *
+         * @type {boolean}
+         */
         this.isDown = false;
     }
 
+    /**
+     * Called internally when a the mouse goes down.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onMouseDown(e)
     {
         this.isDown = true;
@@ -36,6 +58,11 @@ class Pointer extends Controls {
         this.emitPointerEvent({name, clientX, clientY});
     }
 
+    /**
+     * Called internally when a the finger goes down.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onTouchStart(e)
     {
         this.isDown = true;
@@ -46,6 +73,11 @@ class Pointer extends Controls {
         this.emitPointerEvent({name, clientX, clientY});
     }
 
+    /**
+     * Called internally when a the mouse moves.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onMouseMove(e)
     {
         let clientX = e.clientX;
@@ -54,6 +86,11 @@ class Pointer extends Controls {
         this.emitPointerEvent({name, clientX, clientY});
     }
 
+    /**
+     * Called internally when a the finger moves.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onTouchMove(e)
     {
         e.preventDefault();
@@ -63,6 +100,11 @@ class Pointer extends Controls {
         this.emitPointerEvent({name, clientX, clientY});
     }
 
+    /**
+     * Called internally when the mouse goes up.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onMouseUp(e)
     {
         this.isDown = false;
@@ -71,6 +113,11 @@ class Pointer extends Controls {
         this.emitPointerEvent({clientX, clientY});
     }
 
+    /**
+     * Called internally when the finger goes up.
+     *
+     * @param {object} e - The native javascript event object.
+     */
     onTouchEnd(e)
     {
         this.isDown = false;
@@ -80,21 +127,64 @@ class Pointer extends Controls {
         this.emitPointerEvent({clientX, clientY});
     }
 
+    /**
+     * Calculates the events positions within the game, based on the native mouse or touch position and then emits the event.
+     *
+     * @param {object} e - An object containing the name of the event to emit and position data of the native event.
+     * @param {object} e.name - The name of the event to emit.
+     * @param {number} e.clientX - The native events x position relative to the browser window.
+     * @param {number} e.clientY - The native events y position relative to the browser window.
+     *
+     */
     emitPointerEvent({name = 'pointerup', clientX = 0, clientY = 0} = {})
     {
         let rect = this.scene.engine.canvas.getBoundingClientRect();
         let x = (clientX - rect.left);
         let y = (clientY - rect.top);
-        let viewportX = x / this.scene.camera.viewport.zoom;
-        let viewportY = y / this.scene.camera.viewport.zoom;
-        let worldX = viewportX + this.scene.camera.x - this.scene.camera.viewport.width / 2;
-        let worldY = viewportY + this.scene.camera.y - this.scene.camera.viewport.height / 2;
+        let viewportX = x / this.scene.viewport.zoom;
+        let viewportY = y / this.scene.viewport.zoom;
+        let worldX = viewportX + this.scene.offset.x;
+        let worldY = viewportY + this.scene.offset.y;
+        /**
+         * Pointer down event.
+         *
+         * @event module:controls~Pointer#pointerdown
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
+        /**
+         * Pointer move event. On mobile this event only fires when the pointer is down.
+         * This is not the case on desktop. But you can check for the [isDown]{@link module:controls~Pointer#isDown} property
+         *
+         * @event module:controls~Pointer#pointermove
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
+        /**
+         * Pointer up event.
+         *
+         * @event module:controls~Pointer#pointerup
+         * @type {object}
+         * @property {number} viewportX - The x position relative to the top left of the scene's viewport.
+         * @property {number} viewportY - The y position relative to the top left of the scene's viewport.
+         * @property {number} worldX - The x position relative to the scene's origin.
+         * @property {number} worldY - The y position relative to the scene's origin.
+         */
         this.emit(name, {viewportX, viewportY, worldX, worldY});
     }
 
-    destroy()
+    /**
+     * Removes all mouse and touch event listeners.
+     */
+    shutdown()
     {
-        super.destroy();
+        super.shutdown();
 
         let canvas = this.scene.engine.canvas;
         canvas.removeEventListener('mousedown', this.mouseDownHandler);

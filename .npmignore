@@ -3,3 +3,8 @@ index.html
 styles.css
 server.js
 notes.md
+docs/
+docsconfig.json
+docshome.md
+docslayout.tmpl
+rollup.config.js
