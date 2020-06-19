@@ -1,13 +1,9 @@
 {
   "name": "verf",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "a modular and extendible html5 canvas 2d game framework",
   "main": "src/index.js",
-  "module": "dist/verf.esm.js",
-  "browser": "dist/verf.umd.js",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
     "docs": "jsdoc src -r -d docs -c docsconfig.json docshome.md"
   },
   "repository": {
@@ -23,12 +19,7 @@
   "directories": {
     "example": "examples"
   },
-  "files": [
-    "src"
-  ],
   "devDependencies": {
-    "jsdoc": "~3.6.4",
-    "rollup": "^2.16.1",
-    "rollup-plugin-terser": "^6.1.0"
+    "jsdoc": "~3.6.4"
   }
 }
