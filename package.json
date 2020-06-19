@@ -1,6 +1,6 @@
 {
   "name": "verf",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "a modular and extendible html5 canvas 2d game framework",
   "main": "src/index.js",
   "module": "dist/verf.esm.js",
@@ -24,7 +24,8 @@
     "example": "examples"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "devDependencies": {
     "jsdoc": "~3.6.4",
