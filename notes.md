@@ -29,3 +29,5 @@ and a matching grey color: #495867
 - Create buttonup and buttondown events for gamepads as well.
 - Implement some way to check wether the game loses focus or regains focus. So the game could potentially be paused or restarted.
 - Create a function in the sound class that plays a chunk at a certain index.
+- Create an example for a custom preloader
+- Create an example for spreading the loading of assets.
