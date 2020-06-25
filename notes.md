@@ -25,7 +25,6 @@ and a matching grey color: #495867
 ### Todo's
 
 - I think events are not firing in the Keys plugin for the gamepad.
-- The global gamepads reference on the engine, can maybe become a const in the Keys module.
 - Create buttonup and buttondown events for gamepads as well.
 - Implement some way to check wether the game loses focus or regains focus. So the game could potentially be paused or restarted.
 - Create a function in the sound class that plays a chunk at a certain index.
