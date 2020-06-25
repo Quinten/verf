@@ -1,6 +1,6 @@
 {
   "name": "verf",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "a modular and extendible html5 canvas 2d game framework",
   "main": "src/index.js",
   "scripts": {
