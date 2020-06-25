@@ -1,6 +1,6 @@
 {
   "name": "verf",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "a modular and extendible html5 canvas 2d game framework",
   "main": "src/index.js",
   "scripts": {
@@ -16,9 +16,6 @@
     "url": "https://github.com/Quinten/verf/issues"
   },
   "homepage": "https://github.com/Quinten/verf#readme",
-  "directories": {
-    "example": "examples"
-  },
   "devDependencies": {
     "jsdoc": "~3.6.4"
   }
