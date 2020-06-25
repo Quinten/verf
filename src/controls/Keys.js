@@ -7,6 +7,10 @@ const gamepadMapping = [
     'up', 'down', 'left', 'right'
 ];
 
+const gamepads = {
+    free: [],
+    occupied: []
+};
 
 /**
  * Unified keyboard and gamepad input for desktop games. Puts wasd, cursors and gamepad controls together in a single api.
@@ -93,9 +97,9 @@ class Keys extends ScenePlugin {
 
         this.gamepad = -1;
 
-        if (this.scene.engine.gamepads.free.length) {
-            this.gamepad = this.scene.engine.gamepads.free.shift();
-            this.scene.engine.gamepads.occupied.push(this.gamepad);
+        if (gamepads.free.length) {
+            this.gamepad = gamepads.free.shift();
+            gamepads.occupied.push(this.gamepad);
         }
     }
 
@@ -245,9 +249,9 @@ class Keys extends ScenePlugin {
             return;
         }
         let gamepad = e.gamepad.index;
-        if (this.scene.engine.gamepads.occupied.indexOf(gamepad) === -1) {
+        if (gamepads.occupied.indexOf(gamepad) === -1) {
             this.gamepad = gamepad;
-            this.scene.engine.gamepads.occupied.push(this.gamepad);
+            gamepads.occupied.push(this.gamepad);
         }
     }
 
@@ -262,13 +266,13 @@ class Keys extends ScenePlugin {
         if (gamepad == this.gamepad) {
             this.gamepad = -1;
         }
-        let occupiedIndex = this.scene.engine.gamepads.occupied.indexOf(gamepad);
+        let occupiedIndex = gamepads.occupied.indexOf(gamepad);
         if (occupiedIndex > -1) {
-            this.scene.engine.gamepads.occupied.splice(occupiedIndex, 1);
+            gamepads.occupied.splice(occupiedIndex, 1);
         }
-        let freeIndex = this.scene.engine.gamepads.free.indexOf(gamepad);
+        let freeIndex = gamepads.free.indexOf(gamepad);
         if (freeIndex > -1) {
-            this.scene.engine.gamepads.free.splice(freeIndex, 1);
+            gamepads.free.splice(freeIndex, 1);
         }
     }
 
@@ -283,8 +287,8 @@ class Keys extends ScenePlugin {
         if (this.gamepad < 0) {
             return;
         }
-        let gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
-        let gamepad = gamepads[this.gamepad];
+        let navGamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+        let gamepad = navGamepads[this.gamepad];
         gamepad.buttons.forEach((button, index) => {
             if (gamepadMapping[index]) {
                 this[gamepadMapping[index]] = button.pressed;
@@ -305,10 +309,10 @@ class Keys extends ScenePlugin {
         window.removeEventListener('gamepadconnected', this.gamepadConnectedHandler);
         window.removeEventListener('gamepaddisconnected', this.gamepadDisconnectedHandler);
 
-        let occupiedIndex = this.scene.engine.gamepads.occupied.indexOf(this.gamepad);
+        let occupiedIndex = gamepads.occupied.indexOf(this.gamepad);
         if (occupiedIndex > -1) {
-            this.scene.engine.gamepads.occupied.splice(occupiedIndex, 1);
-            this.scene.engine.gamepads.free.push(this.gamepad);
+            gamepads.occupied.splice(occupiedIndex, 1);
+            gamepads.free.push(this.gamepad);
         }
         this.gamepad = -1;
 

@@ -178,11 +178,6 @@ class Engine {
                 window.focus();
             }, false);
         });
-
-        this.gamepads = {
-            free: [],
-            occupied: []
-        };
     }
 
     /**
