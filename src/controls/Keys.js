@@ -101,6 +101,16 @@ class Keys extends ScenePlugin {
             this.gamepad = gamepads.free.shift();
             gamepads.occupied.push(this.gamepad);
         }
+
+        /**
+         * Indicates which gamepad buttons are down
+         *
+         * @type {boolean[]}
+         */
+        this.gamepadButtons = [];
+        gamepadMapping.forEach(() => {
+            this.gamepadButtons.push(false);
+        });
     }
 
     /**
@@ -293,6 +303,25 @@ class Keys extends ScenePlugin {
             if (gamepadMapping[index]) {
                 this[gamepadMapping[index]] = button.pressed;
             }
+            if (!this.gamepadButtons[index] && button.pressed) {
+                /**
+                 * Gamepad button goes down. Passes {id, name} of the button.
+                 *
+                 * @event module:controls~Keys#paddown
+                 * @type {object}
+                 */
+                this.emit('paddown', {id: index, name: gamepadMapping[index]});
+            }
+            if (this.gamepadButtons[index] && !button.pressed) {
+                /**
+                 * Gamepad button goes up. Passes {id, name} of the button.
+                 *
+                 * @event module:controls~Keys#padup
+                 * @type {object}
+                 */
+                this.emit('padup', {id: index, name: gamepadMapping[index]});
+            }
+            this.gamepadButtons[index] = button.pressed;
         });
     }
 

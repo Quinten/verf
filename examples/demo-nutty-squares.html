@@ -24,6 +24,13 @@
                         }
                     });
 
+                    this.keys.on('paddown', (e) => {
+                        console.log(e);
+                    });
+                    this.keys.on('padup', (e) => {
+                        console.log(e);
+                    });
+
                     let crate = this.add(new GameObject({x: 160, y: 192, width: 24, height: 24}).addBody(new Body()));
                     crate.fillStyle = '#ff5e5b';
                     crate.body.immovable = false;
