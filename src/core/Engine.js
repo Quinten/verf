@@ -241,13 +241,16 @@ class Engine {
      */
     switchScene(name) {
         this.scenes.forEach((scene) => {
+            if (scene.name !== name && scene.active) {
+                scene.shutdown();
+            }
+        });
+        this.scenes.forEach((scene) => {
             if (scene.name == name) {
                 if (scene.active) {
                     return;
                 }
                 scene.setup();
-            } else if (scene.active) {
-                scene.shutdown();
             }
         });
     }
