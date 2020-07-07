@@ -2,6 +2,10 @@
 
 a modular and extendible html5 canvas 2d game framework
 
+## Warning
+
+The api is in constant change. Don't use it in production and if you do use it in a project. Use the ~ in the version instead of ^, so it only upgrades the patch version number. The api will still change with minor versions. From 1.0.0 on i will use semantic versioning.
+
 ## Usage
 
 ```
