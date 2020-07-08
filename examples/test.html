@@ -10,47 +10,11 @@
     </head>
     <body>
         <script type="module">
-            import {VerfGame, Scene, GameObject} from '../src/index.js';
+            import topo from '../src/core/game.js';
 
-            class Square extends GameObject {
+            let myGame = topo();
+            console.log(myGame);
 
-                constructor(config)
-                {
-                    super(config);
-                    this.fillStyle = '#fcfff7';
-                    this.alpha = 0;
-                }
-                
-                draw(context)
-                {
-                    context.globalAlpha = this.alpha;
-                    super.draw(context);
-                }
-            }
-
-            class TestScene extends Scene {
-                init ()
-                {
-                    this.square = this.add(new Square({
-                        x: this.viewport.width / 2,
-                        y: this.viewport.height / 2,
-                        width: 64,
-                        height: 64
-                    }));
-                }
-
-                update(time, delta)
-                {
-                    this.square.alpha = (1 + Math.sin(time / 1000)) / 2;
-                }
-            }
-
-            const game = new VerfGame({
-                scenes: [{name: 'testscene', class: TestScene}],
-                zoom: 1,
-                pixelArt: false,
-                background: '#495867'
-            });
         </script>
     </body>
 </html>
